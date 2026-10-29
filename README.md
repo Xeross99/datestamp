@@ -15,7 +15,8 @@ It reads the date the photo was taken from its EXIF, and saves a full-size JPEG 
 - **Private.** Photos never leave your device: there is no server, nothing is uploaded.
 - **One photo or a whole album** at once, saved into a folder, to the gallery, or as downloads.
 - **The real date**, in your language's format. Change it under any photo.
-- **Free**, no sign-up, on a phone or a computer, in seven languages. Works offline and installs as an app.
+- **Works offline.** Install it as an app (PWA) on a phone or a computer, and it runs without internet.
+- **Free**, no sign-up, on a phone or a computer, in seven languages.
 
 ## Author
 
