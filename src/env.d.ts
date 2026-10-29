@@ -12,3 +12,9 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
+
+// libheif-js ships no types for its browser bundle (src/lib/heic.ts types what it uses).
+declare module "libheif-js/libheif-wasm/libheif-bundle.mjs" {
+  const load: () => unknown
+  export default load
+}

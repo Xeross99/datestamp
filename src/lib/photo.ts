@@ -18,11 +18,18 @@ export async function photoDate(file: File): Promise<{ date: Date; source: DateS
 
 /**
  * The decoded photo, already turned upright: createImageBitmap applies the
- * EXIF orientation by default (imageOrientation: "from-image").
- * Throws for formats the browser cannot decode (HEIC outside Safari).
+ * EXIF orientation by default (imageOrientation: "from-image"). A HEIC the
+ * browser cannot decode (outside Safari) goes to libheif, loaded then.
+ * Throws for anything else the browser cannot decode.
  */
-export function decodePhoto(file: File): Promise<ImageBitmap> {
-  return createImageBitmap(file)
+export async function decodePhoto(file: File): Promise<ImageBitmap> {
+  try {
+    return await createImageBitmap(file)
+  } catch (error) {
+    const { isHeic, decodeHeic } = await import("./heic")
+    if (!(await isHeic(file))) throw error
+    return decodeHeic(file)
+  }
 }
 
 export function stampedFileName(name: string) {

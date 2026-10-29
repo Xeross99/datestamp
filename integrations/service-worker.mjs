@@ -24,7 +24,8 @@ export default function serviceWorker({ locales, defaultLocale }) {
         const homes = locales.map((locale) => (locale === defaultLocale ? "" : `${locale}/`))
         // The scripts from _astro; the sample photos there (several sizes and
         // formats) are kept as the browser shows them, not all up front.
-        const scripts = (await files("_astro")).filter((file) => /\.(js|css)$/.test(file))
+        // Not the HEIC decoder (about 2 MB): it is kept once a HEIC needs it.
+        const scripts = (await files("_astro")).filter((file) => /\.(js|css)$/.test(file) && !file.includes("libheif"))
         const precache = [...homes, ...scripts, ...icons]
 
         const hash = createHash("sha256")

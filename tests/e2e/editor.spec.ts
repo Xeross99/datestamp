@@ -122,6 +122,52 @@ test.describe("saving", () => {
     expect(size).toEqual([1200, 800])
   })
 
+  test("opens a HEIC (iPhone) photo in a browser that cannot decode it, and saves it as a JPEG", async ({ page }) => {
+    await useFileDownloads(page)
+    await visit(page)
+    // Chromium has no HEIC decoder of its own: libheif is loaded for it.
+    expect(await page.evaluate(() => createImageBitmap(new Blob([new Uint8Array(16)], { type: "image/heic" })).then(() => true, () => false))).toBe(false)
+    const decoder = page.waitForRequest(/libheif/)
+    await addPhotos(page, [fixture("exif-landscape.heic")])
+    await decoder
+    const card = page.locator(".photo").first()
+    await expect(card.locator("[data-source]")).toHaveText("EXIF")
+    await expect(card.locator('input[type="datetime-local"]')).toHaveValue("1998-07-14T18:30")
+
+    const [download] = await Promise.all([page.waitForEvent("download"), page.locator("[data-save-all]").click()])
+    expect(download.suggestedFilename()).toBe("exif-landscape-date.jpg")
+    const jpeg = await readFile(await download.path())
+    const original = await readFile(fixture("exif-landscape.jpg"))
+    // The real picture, not just its size: the top half (away from the date)
+    // has the colours of the JPEG the HEIC was made from.
+    const [saved, source] = await page.evaluate(
+      async ([a, b]) => {
+        const mean = async (base64: string) => {
+          const bitmap = await createImageBitmap(await (await fetch(`data:image/jpeg;base64,${base64}`)).blob())
+          const canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
+          const context = canvas.getContext("2d")!
+          context.drawImage(bitmap, 0, 0)
+          const { data } = context.getImageData(0, 0, bitmap.width, bitmap.height / 2)
+          const sum = [0, 0, 0]
+          for (let i = 0; i < data.length; i += 4) for (let c = 0; c < 3; c++) sum[c] += data[i + c]
+          return { size: [bitmap.width, bitmap.height], rgb: sum.map((value) => value / (data.length / 4)) }
+        }
+        return [await mean(a), await mean(b)]
+      },
+      [jpeg.toString("base64"), original.toString("base64")],
+    )
+    expect(saved.size).toEqual([1200, 800])
+    saved.rgb.forEach((value, channel) => expect(Math.abs(value - source.rgb[channel])).toBeLessThan(8))
+  })
+
+  test("the HEIC decoder is not loaded with the page", async ({ page }) => {
+    const loaded: string[] = []
+    page.on("request", (request) => loaded.push(request.url()))
+    await visit(page)
+    await addPhotos(page, [PHOTOS[0]])
+    expect(loaded.filter((url) => url.includes("libheif"))).toEqual([])
+  })
+
   test("packs a ZIP on request, with one file per photo", async ({ page }) => {
     await useFileDownloads(page)
     await visit(page)

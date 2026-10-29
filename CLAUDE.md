@@ -48,7 +48,7 @@ Astro 7 runs one dev/preview server per project and refuses a second (`Dev serve
 
 - **Astro 7** (static output) – pages are plain HTML at build time, with almost no JavaScript besides the editor.
 - **Vanilla TypeScript** for the editor (no framework); Astro bundles the `<script>` in `Editor.astro`.
-- **exifr** – reads the photo's EXIF date. **JSZip** – the optional ZIP, loaded with a dynamic `import()` only when needed.
+- **exifr** – reads the photo's EXIF date. **libheif-js** – decodes HEIC where the browser cannot (lazy). **JSZip** – the optional ZIP, loaded with a dynamic `import()` only when needed.
 - **@astrojs/sitemap** – `sitemap-index.xml`.
 - **Tailwind CSS 4** (`@tailwindcss/vite`), styles in `src/styles/global.css`. Utilities in the markup; Tailwind scans `.ts` files too, so classes in the editor's template strings (`src/lib/editor.ts`) work.
 - **Tailwind Plus Elements** (`@tailwindplus/elements`) for the dropdowns (`<el-select>`, `Select.astro`). It needs a Tailwind Plus licence (the owner's).
@@ -104,7 +104,7 @@ tests/unit, tests/e2e, tests/fixtures
 
 1. The user picks photos (the zone opens a hidden `<input type="file" multiple>`) or drops them **anywhere on the page**: the drop listeners are on `document`, so a photo dropped beside the zone is not opened by the browser. The drop filter is lenient (an empty MIME type passes, as the macOS Photos app and HEIC in Chrome give none); a file the browser cannot decode gets the "cannot open" message.
 2. `photoDate` reads `DateTimeOriginal` (or `CreateDate`) with exifr. Without EXIF (screenshots, photos from messengers) it uses `file.lastModified`, and the UI says so. Each photo has a `datetime-local` input to change its date.
-3. `decodePhoto` = `createImageBitmap(file)`, which applies the EXIF orientation by itself.
+3. `decodePhoto` = `createImageBitmap(file)`, which applies the EXIF orientation by itself. If that fails on a HEIC (name, type, or an `ftyp` HEIF brand in its first bytes: Chrome, Edge and Firefox cannot decode it), `src/lib/heic.ts` imports libheif (`libheif-js`, WebAssembly, ~2 MB, LGPL-3.0, its own chunk) at that moment and decodes it; the service worker does not precache that chunk. Fixture `exif-landscape.heic` (made from exif-landscape.jpg with macOS `sips`).
 4. Each photo keeps only a **small preview canvas** (~0.6 MP) so changing an option redraws instantly. The full-size image is **decoded again on export** and then released, so an album never sits in memory at full resolution.
 5. Export: `renderStamped` at full size (capped per device, see below; `fitPixels` rounds down so it never lands above the cap) → JPEG 0.95 → the EXIF put back.
 
@@ -251,13 +251,12 @@ AdSense policy points to respect when changing the layout: no ads on pages witho
 
 - Never commit or push unless the owner asks for it explicitly. Never force push.
 - No backend, no uploads, no analytics that send photos or their metadata anywhere. Anything that would break "photos never leave your device" needs the owner's decision first.
-- Keep the first page load light: the editor is the only real JavaScript. Load heavy libraries (JSZip, exifr, a future HEIC decoder) with dynamic `import()` at the moment they are needed. Also for speed: the CSS is inlined into each page (`build.inlineStylesheets: "always"`), Tailwind Plus Elements is imported by the editor only, and AdSense's script is added after `load`, when the browser is idle (Base.astro). GitHub Pages sends `max-age=600` for every file and that cannot be changed there; repeat visits get the files from the service worker.
+- Keep the first page load light: the editor is the only real JavaScript. Load heavy libraries (JSZip, exifr, the HEIC decoder) with dynamic `import()` at the moment they are needed. Also for speed: the CSS is inlined into each page (`build.inlineStylesheets: "always"`), Tailwind Plus Elements is imported by the editor only, and AdSense's script is added after `load`, when the browser is idle (Base.astro). GitHub Pages sends `max-age=600` for every file and that cannot be changed there; repeat visits get the files from the service worker.
 - Use `<details>`/`<summary>` and plain HTML for show/hide where possible (the language menu, the FAQ) rather than JavaScript.
 - Every layout must work at 375 px with a 16 px gutter and no horizontal scroll.
 
 ## Known gaps / next steps
 
-- **HEIC** outside Safari: Chrome and Firefox cannot decode it, so the editor shows a message. Fix: lazy-load a WASM decoder (`heic2any` or `libheif-js`) when `decodePhoto` fails on a `.heic` file. On iOS the file picker usually converts to JPEG anyway.
 - **Retro font**: currently Courier New with a glow. A seven-segment font such as DSEG7 (OFL licence) bundled in `public/` would look closer to the real thing.
 - More SEO pages: Android, "add date to multiple photos", "old camera date effect", "add date to screenshot".
 - GitHub's terms say Pages is not meant for running an online business. A free tool with ads is a grey area; if that becomes a problem, or a paid tier comes, move the static `dist/` to Cloudflare Pages (free, commercial use allowed, custom headers and redirects). With your own domain, the move keeps every URL and ranking.

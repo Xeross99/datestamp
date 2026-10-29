@@ -12,6 +12,8 @@ written permission from the copyright holder.
 Third-party parts keep their own licences:
 
 - npm dependencies (package.json): each under its own licence.
+  libheif-js (the HEIC decoder) is LGPL-3.0: it is loaded as its own file,
+  unmodified, from https://github.com/catdad-experiments/libheif-js.
 - Tailwind Plus and Tailwind Plus Elements: used under the owner's
   Tailwind Plus licence; not licensed to you by this repository.
 - Sample photos in public/samples: by Kamil Krzysteczko, from Unsplash,

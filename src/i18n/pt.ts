@@ -171,7 +171,7 @@ export default {
     stateQueued: "Aguardando",
     stateWorking: "Processando",
     stateDone: "Pronta",
-    cannotOpen: "Este navegador não consegue abrir {name}. Fotos HEIC abrem no Safari – ou exporte-as primeiro como JPEG.",
+    cannotOpen: "Este navegador não consegue abrir {name}. Funcionam fotos em JPG, PNG, HEIC ou WebP.",
     remove: "Remover",
     dropTitle: "Solte as fotos aqui",
     dropHint: "uma ou um álbum inteiro",
