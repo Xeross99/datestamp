@@ -4,9 +4,8 @@ import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import { defaultLocale, locales } from "./src/i18n/locales.ts"
 
-// GitHub Pages serves a project site at https://<owner>.github.io/<repo>/,
-// so the deploy workflow passes SITE and BASE_PATH. Locally both default
-// to the dev server's root. A custom domain later: SITE=https://domain, BASE_PATH=/.
+// The deploy workflow passes SITE (https://datestamp.eu) and BASE_PATH (/).
+// Locally both default to the dev server's root.
 export default defineConfig({
   site: process.env.SITE ?? "http://localhost:4321",
   base: process.env.BASE_PATH ?? "/",

@@ -234,7 +234,7 @@ AdSense policy points to respect when changing the layout: no ads on pages witho
 
 `.github/workflows/deploy.yml` builds and deploys after CI succeeded on `main` (and by hand: workflow_dispatch). One-time setup in the GitHub repo: **Settings → Pages → Source: GitHub Actions**.
 
-- The workflow sets `SITE=https://<owner>.github.io` and `BASE_PATH=/<repo>` for a project site. Locally both default to `http://localhost:4321` and `/`.
+- The site is on its own domain, **datestamp.eu** (`public/CNAME`): the workflow sets `SITE=https://datestamp.eu` and `BASE_PATH=/`. Locally both default to `http://localhost:4321` and `/`.
 - **Custom domain:** add it in Settings → Pages, put the domain in `public/CNAME`, and change the workflow's env to `SITE: https://<domain>` and `BASE_PATH: /`. GitHub issues the HTTPS certificate for it (Let's Encrypt); tick "Enforce HTTPS" once it is issued.
 - A repository named `<owner>.github.io` is served at the root: `BASE_PATH: /`.
 

@@ -34,10 +34,9 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          # Project site: https://<owner>.github.io/<repo>/
-          # For a custom domain set SITE to it and BASE_PATH to "/".
-          SITE: https://${{ github.repository_owner }}.github.io
-          BASE_PATH: /${{ github.event.repository.name }}
+          # The own domain (public/CNAME), served at the root.
+          SITE: https://datestamp.eu
+          BASE_PATH: /
           # Repository variables (Settings → Secrets and variables → Actions →
           # Variables). Unset = no ads; the site builds without them.
           PUBLIC_ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
