@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 540 220" width="540" height="220" role="img" aria-label="DateStamp: a photo drops into the editor, a click on Retro turns its date into the orange film-camera one, a click on a corner moves it there, and the stamped photo is saved to a folder">
+  <title>DateStamp</title>
+  <style>
+    /* One 9 s loop; the first and last frames are the same empty editor.
+       A photo drops in with a white date in the bottom-left corner; the
+       cursor clicks the Retro tile (the date turns into the orange
+       film-camera one), then the bottom-right corner (the date moves
+       there), then Save: the stamped photo flies into the folder and a
+       check pops up. */
+    * { transform-box: view-box; }
+    .zone    { animation: zone 9s ease-in-out infinite; }
+    .zoneHi  { animation: zoneHi 9s ease-in-out infinite; }
+    .card    { animation: card 9s cubic-bezier(.32,.72,0,1) infinite; }
+    .white   { animation: white 9s ease-in-out infinite; }
+    .retroL  { animation: retroL 9s ease-in-out infinite; }
+    .retroR  { animation: retroR 9s ease-in-out infinite; }
+    .ring1   { animation: ring1 9s ease-in-out infinite; }
+    .ring3   { animation: ring3 9s ease-in-out infinite; }
+    .cornerL { animation: cornerL 9s ease-in-out infinite; }
+    .cornerR { animation: cornerR 9s ease-in-out infinite; }
+    .cursor  { animation: cursor 9s cubic-bezier(.45,0,.25,1) infinite; }
+    .tap     { transform-origin: 0 0; animation: tap 9s ease-in-out infinite; }
+    .r1      { transform-origin: 402px 59px; animation: r1 9s ease-out infinite; }
+    .r2      { transform-origin: 391px 134px; animation: r2 9s ease-out infinite; }
+    .r3      { transform-origin: 378px 168px; animation: r3 9s ease-out infinite; }
+    .save    { transform-origin: 368px 168px; animation: save 9s ease-out infinite; }
+    .fly     { animation: fly 9s cubic-bezier(.45,0,.25,1) infinite; }
+    .inside  { animation: inside 9s ease-out infinite; }
+    .pocket  { transform-origin: 452px 180px; animation: pocket 9s ease-out infinite; }
+    .check   { transform-origin: 508px 114px; animation: check 9s cubic-bezier(.34,1.56,.64,1) infinite; }
+
+    @keyframes zone   { 0%, 12% { opacity: 1; } 17%, 93% { opacity: 0; } 98%, 100% { opacity: 1; } }
+    @keyframes zoneHi { 0%, 6% { opacity: 0; } 10%, 14% { opacity: 1; } 17%, 100% { opacity: 0; } }
+    @keyframes card {
+      0%, 3%   { transform: translate(16px, 92px) rotate(-9deg) scale(.4); opacity: 0; }
+      6%       { opacity: 1; }
+      16%      { transform: translate(124px, 46px) rotate(0deg) scale(1); opacity: 1; }
+      93%      { transform: translate(124px, 46px) rotate(0deg) scale(1); opacity: 1; }
+      98%, 100% { transform: translate(124px, 46px) rotate(0deg) scale(.97); opacity: 0; }
+    }
+    /* the date: white bottom-left, then retro bottom-left, then retro bottom-right */
+    @keyframes white  { 0%, 15% { opacity: 0; } 18%, 29% { opacity: 1; } 30.5%, 100% { opacity: 0; } }
+    @keyframes retroL { 0%, 29% { opacity: 0; } 30.5%, 38.5% { opacity: 1; } 40%, 100% { opacity: 0; } }
+    @keyframes retroR { 0%, 38.5% { opacity: 0; transform: translateX(-12px); } 40.5% { opacity: 1; transform: translateX(0); } 93% { opacity: 1; } 97%, 100% { opacity: 0; } }
+    /* the chosen tile and corner */
+    @keyframes ring1   { 0%, 29% { opacity: 1; } 30%, 96% { opacity: 0; } 98%, 100% { opacity: 1; } }
+    @keyframes ring3   { 0%, 29% { opacity: 0; } 30%, 96% { opacity: 1; } 98%, 100% { opacity: 0; } }
+    @keyframes cornerL { 0%, 38.5% { opacity: 1; } 39.5%, 96% { opacity: 0; } 98%, 100% { opacity: 1; } }
+    @keyframes cornerR { 0%, 38.5% { opacity: 0; } 39.5%, 96% { opacity: 1; } 98%, 100% { opacity: 0; } }
+    @keyframes cursor {
+      0%, 20% { transform: translate(250px, 232px); opacity: 0; }
+      22%     { opacity: 1; }
+      28%     { transform: translate(402px, 59px); }
+      31%     { transform: translate(402px, 59px); }
+      37%     { transform: translate(391px, 134px); }
+      40%     { transform: translate(391px, 134px); }
+      46%     { transform: translate(378px, 168px); }
+      49%     { transform: translate(378px, 168px); opacity: 1; }
+      57%     { transform: translate(420px, 232px); opacity: 0; }
+      100%    { transform: translate(420px, 232px); opacity: 0; }
+    }
+    @keyframes tap { 0%, 28.5%, 30%, 37.5%, 39%, 46.5%, 48%, 100% { transform: scale(1); } 29%, 38%, 47% { transform: scale(.85); } }
+    @keyframes r1 { 0%, 29% { transform: scale(.3); opacity: 0; } 29.5% { opacity: .55; } 35%, 100% { transform: scale(2.4); opacity: 0; } }
+    @keyframes r2 { 0%, 38% { transform: scale(.3); opacity: 0; } 38.5% { opacity: .55; } 44%, 100% { transform: scale(2.4); opacity: 0; } }
+    @keyframes r3 { 0%, 47% { transform: scale(.3); opacity: 0; } 47.5% { opacity: .55; } 53%, 100% { transform: scale(2.4); opacity: 0; } }
+    @keyframes save { 0%, 46.5%, 100% { transform: scale(1); } 47.5% { transform: scale(.94); } 50% { transform: scale(1); } }
+    @keyframes fly {
+      0%, 49%  { transform: translate(124px, 46px) scale(1); opacity: 0; }
+      50%      { transform: translate(124px, 46px) scale(1); opacity: 1; }
+      54%      { transform: translate(184px, 91px) scale(.35); opacity: 1; }
+      61%      { transform: translate(462px, 132px) scale(.26); opacity: 1; }
+      64%, 100% { transform: translate(462px, 142px) scale(.24); opacity: 0; }
+    }
+    @keyframes inside { 0%, 62% { opacity: 0; } 64%, 91% { opacity: 1; } 96%, 100% { opacity: 0; } }
+    @keyframes pocket { 0%, 61%, 100% { transform: scaleY(1); } 63% { transform: scaleY(.9); } 66% { transform: scaleY(1); } }
+    @keyframes check  { 0%, 63% { transform: scale(0); opacity: 0; } 66% { transform: scale(1.18); opacity: 1; } 69%, 89% { transform: scale(1); opacity: 1; } 94%, 100% { transform: scale(.6); opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+      .zone, .zoneHi, .white, .retroL, .ring1, .cornerL, .fly, .cursor, .check, .inside, .r1, .r2, .r3 { opacity: 0; }
+      .card { transform: translate(124px, 46px); }
+    }
+  </style>
+  <defs>
+    <clipPath id="frame"><rect width="184" height="138" rx="8"/></clipPath>
+    <filter id="glow" x="-20%" y="-60%" width="140%" height="220%">
+      <feGaussianBlur stdDeviation="2.2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="outline" x="-10%" y="-40%" width="120%" height="180%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.2" flood-color="#000" flood-opacity=".55"/>
+    </filter>
+    <!-- The photo, 184 × 138 (4:3) at the origin: a warm evening over two ridges. -->
+    <g id="photo">
+      <g clip-path="url(#frame)">
+        <rect width="184" height="138" fill="#e98a5c"/>
+        <rect width="184" height="62" fill="#f2a65a"/>
+        <circle cx="118" cy="56" r="22" fill="#ffd9a0"/>
+        <path d="M0 98 L34 70 L62 88 L100 52 L138 86 L162 68 L184 82 V138 H0Z" fill="#7c4f6e"/>
+        <path d="M0 116 L42 96 L82 114 L124 94 L160 110 L184 102 V138 H0Z" fill="#2f2b45"/>
+      </g>
+    </g>
+    <text id="retro" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#ff8a1f" filter="url(#glow)">14.07.2026</text>
+  </defs>
+
+  <!-- The browser window with the editor -->
+  <rect x="112" y="16" width="320" height="194" rx="12" fill="rgba(0,0,0,0.35)"/>
+  <rect x="110" y="12" width="320" height="194" rx="12" fill="#34322f" stroke="#45423e"/>
+  <path d="M110 24a12 12 0 0 1 12-12h296a12 12 0 0 1 12 12v12H110Z" fill="#2a2826"/>
+  <circle cx="124" cy="24" r="3" fill="#5a5651"/><circle cx="134" cy="24" r="3" fill="#5a5651"/><circle cx="144" cy="24" r="3" fill="#5a5651"/>
+  <rect x="200" y="18" width="140" height="12" rx="6" fill="#34322f"/>
+  <text x="270" y="27" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="8" fill="#a39d96" text-anchor="middle">datestamp.eu</text>
+
+  <!-- Drop zone (empty) -->
+  <g class="zone">
+    <rect x="124.75" y="46.75" width="182.5" height="136.5" rx="8" fill="none" stroke="#5a5651" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <g fill="none" stroke="#a39d96" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="204" y="102" width="24" height="19" rx="3"/>
+      <circle cx="211" cy="109" r="2"/>
+      <path d="m205 119 7-6 5 4 4-3 6 5"/>
+    </g>
+  </g>
+  <rect class="zoneHi" x="124.75" y="46.75" width="182.5" height="136.5" rx="8" fill="#ff7a1a" fill-opacity=".08" stroke="#ff7a1a" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+  <!-- Settings: style tiles (white, label, retro), format, corner, Save -->
+  <rect x="320" y="48" width="28" height="22" rx="4" fill="#3d3a37"/>
+  <rect x="326" y="61" width="16" height="3" rx="1" fill="#ffffff" stroke="#5a5651" stroke-width=".5"/>
+  <rect x="354" y="48" width="28" height="22" rx="4" fill="#3d3a37"/>
+  <rect x="359" y="59" width="18" height="6" rx="1.5" fill="#1c1b1a" opacity=".7"/>
+  <rect x="388" y="48" width="28" height="22" rx="4" fill="#2a2d30"/>
+  <rect x="393" y="61" width="18" height="3" rx="1" fill="#ff8a1f"/>
+  <rect class="ring1" x="320" y="48" width="28" height="22" rx="4" fill="none" stroke="#ff7a1a" stroke-width="2"/>
+  <rect class="ring3" x="388" y="48" width="28" height="22" rx="4" fill="none" stroke="#ff7a1a" stroke-width="2" opacity="0"/>
+
+  <rect x="320" y="80" width="96" height="14" rx="4" fill="none" stroke="#45423e"/>
+  <rect x="326" y="85.5" width="34" height="3" rx="1.5" fill="#a39d96"/>
+
+  <rect x="320" y="102" width="96" height="44" rx="5" fill="#2a2d30"/>
+  <rect x="323" y="105" width="44" height="18" rx="3" fill="#ffffff" opacity=".05"/>
+  <rect x="369" y="105" width="44" height="18" rx="3" fill="#ffffff" opacity=".05"/>
+  <rect x="323" y="125" width="44" height="18" rx="3" fill="#ffffff" opacity=".05"/>
+  <rect x="369" y="125" width="44" height="18" rx="3" fill="#ffffff" opacity=".05"/>
+  <rect class="cornerL" x="323" y="125" width="44" height="18" rx="3" fill="#ff7a1a" fill-opacity=".18" stroke="#ff7a1a" stroke-width="1.5"/>
+  <rect class="cornerR" x="369" y="125" width="44" height="18" rx="3" fill="#ff7a1a" fill-opacity=".18" stroke="#ff7a1a" stroke-width="1.5" opacity="0"/>
+
+  <g class="save">
+    <rect x="320" y="156" width="96" height="24" rx="6" fill="#ff7a1a"/>
+    <text x="368" y="172" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#1c1b1a" text-anchor="middle">Save</text>
+  </g>
+
+  <!-- The photo that drops in, and its date -->
+  <g class="card">
+    <use href="#photo" xlink:href="#photo"/>
+  </g>
+  <text class="white" x="134" y="175" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="600" fill="#ffffff" filter="url(#outline)" opacity="0">14.07.2026</text>
+  <use class="retroL" href="#retro" xlink:href="#retro" x="134" y="175" opacity="0"/>
+  <g class="retroR" opacity="0">
+    <use href="#retro" xlink:href="#retro" x="214" y="175"/>
+  </g>
+
+  <!-- Folder back -->
+  <path d="M446 128a6 6 0 0 1 6-6h18l6 6h34a6 6 0 0 1 6 6v40a6 6 0 0 1-6 6h-58a6 6 0 0 1-6-6Z" fill="#55514b"/>
+  <g class="inside" opacity="0">
+    <rect x="456" y="124" width="44" height="33" rx="3" fill="#f2a65a" transform="rotate(-6 478 140)"/>
+    <rect x="462" y="128" width="44" height="33" rx="3" fill="#e98a5c" transform="rotate(4 484 144)"/>
+  </g>
+
+  <!-- The stamped photo flying into the folder (between its back and front) -->
+  <g class="fly" opacity="0">
+    <use href="#photo" xlink:href="#photo"/>
+    <use href="#retro" xlink:href="#retro" x="90" y="129"/>
+  </g>
+
+  <!-- Folder front -->
+  <path class="pocket" d="M446 140a6 6 0 0 1 6-6h58a6 6 0 0 1 6 6v34a6 6 0 0 1-6 6h-58a6 6 0 0 1-6-6Z" fill="#45423e"/>
+
+  <!-- Check -->
+  <g class="check" opacity="0">
+    <circle cx="508" cy="114" r="11" fill="#16a34a"/>
+    <path d="m503 114 3.5 3.5 6.5-7" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Clicks and the cursor -->
+  <circle class="r1" cx="402" cy="59" r="8" fill="none" stroke="#ff7a1a" stroke-width="2" opacity="0"/>
+  <circle class="r2" cx="391" cy="134" r="8" fill="none" stroke="#ff7a1a" stroke-width="2" opacity="0"/>
+  <circle class="r3" cx="378" cy="168" r="8" fill="none" stroke="#ff7a1a" stroke-width="2" opacity="0"/>
+  <g class="cursor" opacity="0">
+    <path class="tap" d="M0 0 L0 15 L4 11.5 L6.8 17.5 L9.2 16.4 L6.5 10.6 L11.5 10.4 Z" fill="#f5f2ed" stroke="#34322f" stroke-width="1.2" stroke-linejoin="round"/>
+  </g>
+</svg>
