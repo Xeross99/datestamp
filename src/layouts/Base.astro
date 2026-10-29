@@ -418,6 +418,17 @@ const jsonLd = {
       const opener = document.querySelector<HTMLButtonElement>("[data-menu-open]")
       if (menu && shade && opener) {
         const behind = [...document.querySelectorAll<HTMLElement>("body > div > header, body > div > main")]
+        // Safari paints the status bar with theme-color, above the page where
+        // the shade cannot reach: dim it the same way while the menu is open
+        // (the page's colour under 30 % black), and put it back after.
+        const themeColors = [...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')]
+        const shadeBar = (on: boolean) => {
+          const page = getComputedStyle(shade.parentElement!).backgroundColor.match(/\d+(\.\d+)?/g)?.slice(0, 3).map(Number)
+          themeColors.forEach((meta) => {
+            meta.dataset.color ??= meta.content
+            meta.content = on && page ? `rgb(${page.map((value) => Math.round(value * 0.7)).join(", ")})` : meta.dataset.color
+          })
+        }
         const openMenu = () => {
           menu.style.top = `${scrollY}px`
           menu.hidden = false
@@ -427,12 +438,14 @@ const jsonLd = {
           void menu.offsetWidth // start the slide from off-screen
           menu.dataset.open = ""
           shade.dataset.open = ""
+          shadeBar(true)
           menu.querySelector("a")?.focus({ preventScroll: true })
         }
         const closeMenu = () => {
           if (menu.hidden || !("open" in menu.dataset)) return
           delete menu.dataset.open
           delete shade.dataset.open
+          shadeBar(false)
           document.documentElement.style.overflow = ""
           behind.forEach((element) => (element.inert = false))
           opener.setAttribute("aria-expanded", "false")

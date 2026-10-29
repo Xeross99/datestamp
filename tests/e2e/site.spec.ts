@@ -144,12 +144,17 @@ test("the navbar links the page's sections; on a phone they are in a menu that c
   await expect(panel).toHaveCSS("translate", "none")
   expect((await shade.boundingBox())!.height).toBeGreaterThanOrEqual(await page.evaluate(() => document.documentElement.scrollHeight) - 1)
   await expect(page.locator("html")).toHaveCSS("overflow", "hidden")
+  // Safari's status bar (theme-color) is dimmed with it: the light page
+  // (251, 250, 248) under 30 % black.
+  const themeColors = () => page.locator('meta[name="theme-color"]').evaluateAll((metas) => metas.map((meta) => (meta as HTMLMetaElement).content))
+  expect(await themeColors()).toContain("rgb(176, 175, 174)")
   await faqLink.click()
   await expect(page.locator("#faq")).toBeInViewport()
   expect(new URL(page.url()).hash).toBe("")
   await expect(faqLink).toBeHidden()
   await expect(shade).not.toHaveAttribute("data-open")
   await expect(page.locator("html")).not.toHaveCSS("overflow", "hidden")
+  expect(await themeColors()).not.toContain("rgb(176, 175, 174)")
 
   // Escape and a tap beside the sheet close it too.
   await page.getByRole("button", { name: strings.pl.nav.menu }).click()
@@ -298,9 +303,13 @@ test("an ad AdSense could not fill is hidden, label and all", async ({ page, isM
   test.skip(isMobile, "the rails exist only on wide screens")
   await page.setViewportSize({ width: 1500, height: 900 })
   await page.goto(pathOf("home", "pl"))
-  await page.locator(".ad-rail-left ins").evaluate((unit) => unit.setAttribute("data-ad-status", "unfilled"))
-  await expect(page.locator(".ad-rail-left")).toHaveCSS("visibility", "hidden")
-  await expect(page.locator(".ad-rail-right")).toHaveCSS("visibility", "visible")
+  // As AdSense leaves it: the unit unfilled, its iframe set visible.
+  await page.locator(".ad-rail-left ins").evaluate((unit) => {
+    unit.setAttribute("data-ad-status", "unfilled")
+    unit.insertAdjacentHTML("beforeend", '<iframe style="visibility: visible; background: white; width: 160px; height: 600px"></iframe>')
+  })
+  await expect(page.locator(".ad-rail-left")).toHaveCSS("opacity", "0")
+  await expect(page.locator(".ad-rail-right")).toHaveCSS("opacity", "1")
 })
 
 test("a section link from a guide opens the home page at that section, with no # left in the address", async ({ page, isMobile }) => {

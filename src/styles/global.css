@@ -417,9 +417,12 @@
 }
 /* AdSense had no ad for a unit (data-ad-status="unfilled", e.g. before the
    site is approved) and leaves an empty white frame: hide it with its
-   "Advertisement" label. The rail keeps its column; the inline unit folds. */
+   "Advertisement" label. The rail keeps its column; the inline unit folds.
+   Opacity, not visibility: AdSense sets visibility: visible on its iframe,
+   which a hidden parent cannot overrule (the white frame stayed). */
 .ad-rail:has(ins[data-ad-status="unfilled"]) {
-  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 .ad-inline:has(ins[data-ad-status="unfilled"]) {
   display: none;
