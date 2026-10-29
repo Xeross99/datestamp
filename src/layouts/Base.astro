@@ -197,6 +197,14 @@ const jsonLd = {
     {!notFound && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     {(adsense.client || gaId) && <script is:inline set:html={consentScript} />}
     {
+      // Offline use (PWA): the service worker the build writes (integrations/sw.js).
+      import.meta.env.PROD && (
+        <script is:inline define:vars={{ sw: href("/sw.js") }}>
+          if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register(sw).catch(() => {}))
+        </script>
+      )
+    }
+    {
       adsense.client && (
         <script
           is:inline

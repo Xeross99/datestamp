@@ -142,7 +142,7 @@ export default {
     h1: "Privacy policy",
     sections: [
       { title: "Your photos", body: "DateStamp works entirely in your browser. Photos you choose are processed on your device and are never uploaded, stored or seen by us." },
-      { title: "Settings in your browser", body: "Your chosen style, format and position are remembered in your browser's local storage, only on your device. Clearing site data removes them." },
+      { title: "Settings in your browser", body: "Your chosen style, format and position are remembered in your browser's local storage, only on your device. Clearing site data removes them. So that the editor works offline, the site's own pages and files are kept there too, never your photos." },
       { title: "Advertising", body: "This site shows ads from Google AdSense, which keep it free. On your first visit we ask for your consent to advertising cookies. If you agree, Google and its partners may match ads to your visits to this and other sites; if you refuse, the ads are not personalised. You can change your choice at any time with “Cookie settings” at the bottom of the page; it is kept in your browser. How Google uses data: policies.google.com/technologies/ads." },
       { title: "Statistics", body: "With your consent we use Google Analytics 4 to learn how many people visit the site and how the editor is used (for example how many photos were saved and in which style). Photos, file names and the dates in them are never sent. Without consent Google Analytics is not loaded at all. How Google uses data: policies.google.com/technologies/partner-sites." },
     ],

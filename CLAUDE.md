@@ -89,6 +89,7 @@ src/
   pages/llms.txt.ts       llms.txt for AI assistants, generated from the strings
   pages/og/[locale].astro the share-picture layout, dev server only (npm run assets)
 scripts/assets.mjs        renders the icon PNGs and the OG pictures with Playwright
+integrations/sw.js        the service worker (offline use) as a template; service-worker.mjs fills it in after the build and writes dist/sw.js
   i18n/
     locales.ts            the locale list + default locale (imported by astro.config.mjs too)
     index.ts              strings map, t(), pages list, pathOf(), href()
@@ -151,6 +152,12 @@ The format list and its order come from the locale (`dateFormats` in `src/i18n/<
 **Every stamp size is a fraction of the photo's shorter side** (`size` is a percentage), so the preview and the export look the same. Keep it that way when adding styles.
 
 Options are remembered in `localStorage` (`datestamp:options`). Every access is wrapped in try/catch, because storage can be blocked (private mode), and the editor works without it.
+
+## Offline (PWA)
+
+The site installs as an app (`manifest.webmanifest`, `display: standalone`) and the editor works without a network after one visit. `integrations/service-worker.mjs` (an Astro integration) writes `dist/sw.js` from `integrations/sw.js` at the end of the build: it keeps every language's home page, `_astro/` (scripts, styles, JSZip), the icons and the sample photos, and its version is a hash of those files, so a deploy that changes one installs a new worker and drops the old cache. Pages go to the network first (an update shows at once) and fall back to the last copy, else that language's home page; files are cache-first. Only same-origin GETs: Google's ads and statistics never go through it. Base.astro registers it in production builds only (none on the dev server). Cached copies are matched with `ignoreVary` (a module script's request carries Origin, the install's did not) and `ignoreSearch` (the icons' `?v=`).
+
+The e2e tests run with `serviceWorkers: "block"` (a worker would answer requests out of reach of `page.route`); `tests/e2e/offline.spec.ts` turns it on, goes offline and uses the editor.
 
 ## SEO and AI answer engines
 
@@ -251,6 +258,5 @@ AdSense policy points to respect when changing the layout: no ads on pages witho
 
 - **HEIC** outside Safari: Chrome and Firefox cannot decode it, so the editor shows a message. Fix: lazy-load a WASM decoder (`heic2any` or `libheif-js`) when `decodePhoto` fails on a `.heic` file. On iOS the file picker usually converts to JPEG anyway.
 - **Retro font**: currently Courier New with a glow. A seven-segment font such as DSEG7 (OFL licence) bundled in `public/` would look closer to the real thing.
-- **PWA**: icons are there; a small service worker for offline use is not.
 - More SEO pages: Android, "add date to multiple photos", "old camera date effect", "add date to screenshot".
 - GitHub's terms say Pages is not meant for running an online business. A free tool with ads is a grey area; if that becomes a problem, or a paid tier comes, move the static `dist/` to Cloudflare Pages (free, commercial use allowed, custom headers and redirects). With your own domain, the move keeps every URL and ranking.

@@ -139,7 +139,7 @@ export default {
     h1: "Polityka prywatności",
     sections: [
       { title: "Twoje zdjęcia", body: "DateStamp działa w całości w przeglądarce. Wybrane zdjęcia są przetwarzane na Twoim urządzeniu i nigdy nie są wysyłane, przechowywane ani oglądane przez nas." },
-      { title: "Ustawienia w przeglądarce", body: "Wybrany styl, format i pozycja są zapamiętywane w pamięci lokalnej przeglądarki, tylko na Twoim urządzeniu. Wyczyszczenie danych strony je usuwa." },
+      { title: "Ustawienia w przeglądarce", body: "Wybrany styl, format i pozycja są zapamiętywane w pamięci lokalnej przeglądarki, tylko na Twoim urządzeniu. Wyczyszczenie danych strony je usuwa. Żeby edytor działał bez internetu, przechowywane są tam też strony i pliki samej witryny, nigdy Twoje zdjęcia." },
       { title: "Reklamy", body: "Na stronie wyświetlane są reklamy Google AdSense, dzięki którym jest ona darmowa. Przy pierwszej wizycie pytamy o zgodę na reklamowe pliki cookie. Jeśli się zgodzisz, Google i jego partnerzy mogą dopasowywać reklamy do Twoich wizyt na tej i innych stronach; jeśli odmówisz, reklamy nie są personalizowane. Swój wybór zmienisz w każdej chwili przez „Ustawienia cookies” na dole strony; jest on zapisany w Twojej przeglądarce. Jak Google wykorzystuje dane: policies.google.com/technologies/ads." },
       { title: "Statystyki", body: "Za Twoją zgodą korzystamy z Google Analytics 4, żeby wiedzieć, ile osób odwiedza stronę i jak korzysta z edytora (np. ile zdjęć zapisano i w jakim stylu). Nie wysyłamy zdjęć, nazw plików ani dat z nich. Bez zgody Google Analytics w ogóle się nie wczytuje. Jak Google wykorzystuje dane: policies.google.com/technologies/partner-sites." },
     ],

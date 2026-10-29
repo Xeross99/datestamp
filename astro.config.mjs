@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config"
 import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
+import serviceWorker from "./integrations/service-worker.mjs"
 import { defaultLocale, locales } from "./src/i18n/locales.ts"
 
 // The deploy workflow passes SITE (https://datestamp.eu) and BASE_PATH (/).
@@ -22,5 +23,7 @@ export default defineConfig({
       // hreflang alternates for every page, matched by the /<locale>/ prefix.
       i18n: { defaultLocale, locales: Object.fromEntries(locales.map((locale) => [locale, locale])) },
     }),
+    // dist/sw.js: the editor works offline (PWA).
+    serviceWorker({ locales, defaultLocale }),
   ],
 })

@@ -139,7 +139,7 @@ export default {
     h1: "Política de privacidad",
     sections: [
       { title: "Tus fotos", body: "DateStamp funciona por completo en tu navegador. Las fotos que eliges se procesan en tu dispositivo y nunca se suben, se guardan ni las vemos nosotros." },
-      { title: "Ajustes en tu navegador", body: "El estilo, el formato y la posición que eliges se recuerdan en el almacenamiento local de tu navegador, solo en tu dispositivo. Si borras los datos del sitio, desaparecen." },
+      { title: "Ajustes en tu navegador", body: "El estilo, el formato y la posición que eliges se recuerdan en el almacenamiento local de tu navegador, solo en tu dispositivo. Si borras los datos del sitio, desaparecen. Para que el editor funcione sin conexión, también se guardan allí las páginas y archivos del propio sitio, nunca tus fotos." },
       { title: "Publicidad", body: "Este sitio muestra anuncios de Google AdSense, que lo mantienen gratis. En tu primera visita te pedimos el consentimiento para las cookies publicitarias. Si aceptas, Google y sus socios pueden adaptar los anuncios a tus visitas a este y otros sitios; si lo rechazas, los anuncios no se personalizan. Puedes cambiar tu elección cuando quieras con «Configuración de cookies», al final de la página; se guarda en tu navegador. Cómo usa Google los datos: policies.google.com/technologies/ads." },
       { title: "Estadísticas", body: "Con tu consentimiento usamos Google Analytics 4 para saber cuántas personas visitan el sitio y cómo usan el editor (por ejemplo, cuántas fotos se guardaron y con qué estilo). Nunca se envían fotos, nombres de archivo ni sus fechas. Sin consentimiento, Google Analytics no se carga. Cómo usa Google los datos: policies.google.com/technologies/partner-sites." },
     ],
