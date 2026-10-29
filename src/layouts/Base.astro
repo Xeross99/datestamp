@@ -171,8 +171,11 @@ const jsonLd = {
     <link rel="manifest" href={href("/manifest.webmanifest")} />
     <meta name="application-name" content="DateStamp" />
     <meta name="apple-mobile-web-app-title" content="DateStamp" />
+    <!-- The browser's bar matches what is under it: the frame from lg (1024 px) up, the page below. -->
+    <meta name="theme-color" content="#efece6" media="(prefers-color-scheme: light) and (min-width: 1024px)" />
+    <meta name="theme-color" content="#201e1c" media="(prefers-color-scheme: dark) and (min-width: 1024px)" />
     <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#141312" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#2a2826" media="(prefers-color-scheme: dark)" />
     <link rel="sitemap" href={href("/sitemap-index.xml")} />
     <!-- For AI assistants and answer engines: what the site is, in plain text. -->
     <link rel="alternate" type="text/plain" title="llms.txt" href={href("/llms.txt")} />

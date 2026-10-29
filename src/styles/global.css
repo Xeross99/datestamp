@@ -195,8 +195,15 @@
 }
 
 @layer base {
+  /* What shows past the page's edges (Safari's rubber-band scroll, a short
+     page): the frame colour from lg up, where the page is a panel on the
+     frame; the page colour below, where there is no frame. */
+  html,
   body {
-    @apply bg-page font-sans text-ink antialiased;
+    @apply bg-page lg:bg-frame;
+  }
+  body {
+    @apply font-sans text-ink antialiased;
   }
   /* `hidden` must win over any display utility (flex, grid...). */
   [hidden] {

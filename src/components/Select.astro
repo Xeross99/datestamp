@@ -14,11 +14,12 @@ const id = `select-${name}`
 ---
 
 <div>
-  <label for={id} class="block text-sm/6 font-semibold text-muted">{label}</label>
-  <el-select id={id} name={name} value={options[0].value} class="mt-1 block">
+  <!-- Same as the editor's other headings (legends): 13 px, semibold, ink. -->
+  <label for={id} class="mb-2 block text-[13px] font-semibold text-ink">{label}</label>
+  <el-select id={id} name={name} value={options[0].value} class="block">
     <button
       type="button"
-      class="grid w-full cursor-pointer grid-cols-1 rounded-lg bg-page py-2 pr-2 pl-3 text-left text-ink outline-1 -outline-offset-1 outline-line transition-[outline-color] hover:outline-muted focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent sm:text-sm/6"
+      class="grid w-full cursor-pointer grid-cols-1 rounded-lg bg-surface py-2 pr-2 pl-3 text-left text-ink outline-1 -outline-offset-1 outline-line transition-[outline-color] hover:outline-muted focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent sm:text-sm/6"
     >
       <el-selectedcontent class="col-start-1 row-start-1 truncate pr-6 font-medium">{options[0].label}</el-selectedcontent>
       <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="col-start-1 row-start-1 size-5 self-center justify-self-end text-muted sm:size-4">
