@@ -40,6 +40,8 @@ export function mountThemeSwitch(root: HTMLElement) {
       const theme = button.dataset.themeChoice as Theme
       mark(theme)
       changeSmoothly(() => applyTheme(theme))
+      // The narrow navbar's menu closes once a theme is picked.
+      button.closest("details")?.removeAttribute("open")
     }),
   )
 }

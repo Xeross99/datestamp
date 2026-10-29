@@ -264,8 +264,9 @@ const jsonLd = {
             }
           </ul>
           <div class="-ml-2 flex-1 lg:-ml-4" aria-hidden="true"></div>
-          <!-- Under 360 px the switch would not fit next to the language: it is in the menu then. -->
-          <div class="max-[359px]:hidden"><ThemeSwitch locale={locale} /></div>
+          <!-- Under 420 px the three buttons crowd the logo: one button opens them instead. -->
+          <div class="max-[419px]:hidden"><ThemeSwitch locale={locale} /></div>
+          <div class="min-[420px]:hidden"><ThemeSwitch locale={locale} variant="menu" /></div>
           <details class="relative text-sm">
             <summary
               class="flex h-8.5 cursor-pointer list-none items-center gap-2 rounded-full border border-line px-3 font-medium hover:border-muted"
@@ -436,11 +437,15 @@ const jsonLd = {
           highlight(id)
         } else scrollTo({ top: 0 })
       })
-      // Arriving with a hash (a section link from another page): highlight it,
-      // then drop the hash from the address.
+      // Arriving with a hash (a section link from another page): go to the
+      // section ourselves, as dropping the hash from the address before the
+      // browser has scrolled there would leave the page at the top; then
+      // highlight it.
       if (location.hash) {
-        highlight(decodeURIComponent(location.hash.slice(1)))
+        const id = decodeURIComponent(location.hash.slice(1))
         history.replaceState(history.state, "", location.pathname + location.search)
+        document.getElementById(id)?.scrollIntoView({ block: "start", behavior: "instant" })
+        highlight(id)
       }
 
       // The navbar's underline: under the current page's item, and on the home

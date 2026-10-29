@@ -244,6 +244,15 @@
 :root[data-theme="dark"] .theme-switch-indicator {
   transform: translateX(28px);
 }
+/* The narrow navbar's theme button shows the current choice's icon. */
+.theme-menu-icon {
+  display: none;
+}
+:root:not([data-theme]) .theme-menu-icon[data-icon="system"],
+:root[data-theme="light"] .theme-menu-icon[data-icon="light"],
+:root[data-theme="dark"] .theme-menu-icon[data-icon="dark"] {
+  display: block;
+}
 
 /* Moving to another page of the site: the page itself swaps at once, and
    only the navbar's underline (view-transition-name: nav-indicator) slides
@@ -405,6 +414,15 @@
   .page {
     grid-template-columns: 300px minmax(0, 960px) 300px;
   }
+}
+/* AdSense had no ad for a unit (data-ad-status="unfilled", e.g. before the
+   site is approved) and leaves an empty white frame: hide it with its
+   "Advertisement" label. The rail keeps its column; the inline unit folds. */
+.ad-rail:has(ins[data-ad-status="unfilled"]) {
+  visibility: hidden;
+}
+.ad-inline:has(ins[data-ad-status="unfilled"]) {
+  display: none;
 }
 
 /* A photo card's state: data-state on .photo, set in src/lib/editor.ts.

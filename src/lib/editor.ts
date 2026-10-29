@@ -252,7 +252,7 @@ export function mountEditor(root: HTMLElement) {
         <span class="photo-badge absolute top-1.5 left-1.5 flex h-6 items-center gap-1.5 rounded-full bg-black/75 pr-2.5 pl-1.5 text-xs font-semibold text-white">
           <span class="photo-badge-icon block size-3.5 rounded-full" aria-hidden="true"></span><span class="photo-badge-text"></span>
         </span>
-        <button type="button" class="absolute top-1.5 right-1.5 flex size-8 items-center justify-center rounded-full bg-black/60 text-white transition after:absolute after:-inset-1.5 hover:bg-black/80" data-remove>
+        <button type="button" class="absolute top-1.5 right-1.5 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition after:absolute after:-inset-1.5 hover:bg-black/80" data-remove>
           <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
         </button>
       </div>

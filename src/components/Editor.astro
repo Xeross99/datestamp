@@ -27,7 +27,7 @@ const corner: Record<StampPosition, string> = {
   "bottom-left": "items-end justify-start",
   "bottom-right": "items-end justify-end",
 }
-const button = "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition disabled:cursor-not-allowed"
+const button = "inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-semibold transition disabled:cursor-not-allowed"
 ---
 
 <div
@@ -85,7 +85,13 @@ const button = "inline-flex items-center justify-center gap-2 rounded-lg font-se
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-3 empty:hidden sm:grid-cols-3 lg:grid-cols-4" data-photos></div>
+    <!-- With a mouse, a long album scrolls inside, as high as the drop zone,
+         so the editor keeps its size. Not on touch screens: a scroll
+         container is its own layer and turns iOS Safari's toolbar opaque. -->
+    <div
+      class="grid grid-cols-2 gap-3 empty:hidden sm:grid-cols-3 lg:grid-cols-4 pointer-fine:-m-1 pointer-fine:max-h-97 pointer-fine:overflow-y-auto pointer-fine:overscroll-contain pointer-fine:p-1"
+      data-photos
+    ></div>
 
     <button
       type="button"

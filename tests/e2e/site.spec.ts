@@ -24,7 +24,7 @@ test("every page in every locale answers", async ({ request }) => {
 
 test("the language menu keeps the page and switches the language", async ({ page }) => {
   await page.goto(pathOf("iphone", "pl"))
-  await page.locator("header summary").click()
+  await page.locator('header summary[aria-label="Language"]').click()
   await page.locator('header a[hreflang="de"]').click()
   await expect(page).toHaveURL(new RegExp(`${pathOf("iphone", "de")}$`))
   await expect(page.locator("html")).toHaveAttribute("lang", "de")
@@ -32,16 +32,37 @@ test("the language menu keeps the page and switches the language", async ({ page
 
 test("the theme switch applies and remembers a theme, and system forgets it", async ({ page }) => {
   await visit(page)
-  await page.locator('header [data-theme-choice="dark"]').click()
+  // Below 420 px (the phone project) the navbar has one button that opens the three.
+  const menu = page.locator("header details[data-theme-switch]")
+  const pick = async (theme: string) => {
+    if (await menu.isVisible()) await menu.locator("summary").click()
+    await page.locator(`header [data-theme-choice="${theme}"]:visible`).click()
+  }
+  await pick("dark")
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
   await page.reload()
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
-  await expect(page.locator('header [data-theme-choice="dark"]')).toHaveAttribute("aria-pressed", "true")
+  await expect(page.locator('header [data-theme-choice="dark"]').first()).toHaveAttribute("aria-pressed", "true")
 
-  await page.locator('header [data-theme-choice="system"]').click()
+  await pick("system")
   await expect(page.locator("html")).not.toHaveAttribute("data-theme", /.*/)
   await page.reload()
   await expect(page.locator("html")).not.toHaveAttribute("data-theme", /.*/)
+})
+
+test("on a narrow phone the theme is a menu: its button shows the choice and closes after a pick", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 })
+  await visit(page)
+  const menu = page.locator("header details[data-theme-switch]")
+  await expect(menu).toBeVisible()
+  await expect(page.locator("header [role=group][data-theme-switch]")).toBeHidden()
+  await expect(menu.locator('summary [data-icon="system"]')).toBeVisible()
+  await menu.locator("summary").click()
+  await menu.locator('[data-theme-choice="dark"]').click()
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
+  await expect(menu).not.toHaveAttribute("open")
+  await expect(menu.locator('summary [data-icon="dark"]')).toBeVisible()
+  await expect(menu.locator('summary [data-icon="system"]')).toBeHidden()
 })
 
 test("no horizontal scrolling", async ({ page }) => {
@@ -205,7 +226,37 @@ test("a missing address shows the 404 page in the language of its path, not inde
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(strings.pl.notFound.h1)
   await expect(page.getByRole("link", { name: strings.pl.notFound.cta })).toHaveAttribute("href", /\/pl\/$/)
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex")
-  await expect(page.locator('link[rel="canonical"], script[type="application/ld+json"], ins.adsbygoogle')).toHaveCount(0)
+  await expect(page.locator('link[rel="canonical"], script[type="application/ld+json"], ins.ad-unit')).toHaveCount(0)
+})
+
+test("on a wide screen both rails ask AdSense for an ad, and the hidden inline unit does not", async ({ page, isMobile }) => {
+  test.skip(isMobile, "the rails exist only on wide screens")
+  await page.setViewportSize({ width: 1500, height: 900 })
+  await page.goto(pathOf("home", "pl"))
+  // A unit gets the adsbygoogle class (AdSense's turn) only when it is requested.
+  await expect(page.locator(".ad-rail ins.adsbygoogle")).toHaveCount(2)
+  await expect(page.locator(".ad-inline ins.adsbygoogle")).toHaveCount(0)
+  expect(await page.evaluate(() => (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle.length)).toBe(2)
+})
+
+test("an ad AdSense could not fill is hidden, label and all", async ({ page, isMobile }) => {
+  test.skip(isMobile, "the rails exist only on wide screens")
+  await page.setViewportSize({ width: 1500, height: 900 })
+  await page.goto(pathOf("home", "pl"))
+  await page.locator(".ad-rail-left ins").evaluate((unit) => unit.setAttribute("data-ad-status", "unfilled"))
+  await expect(page.locator(".ad-rail-left")).toHaveCSS("visibility", "hidden")
+  await expect(page.locator(".ad-rail-right")).toHaveCSS("visibility", "visible")
+})
+
+test("a section link from a guide opens the home page at that section, with no # left in the address", async ({ page, isMobile }) => {
+  await page.goto(pathOf("iphone", "pl"))
+  if (isMobile) await page.getByRole("button", { name: strings.pl.nav.menu }).click()
+  const links = page.locator(isMobile ? "#mobile-menu" : "header nav")
+  await links.getByRole("link", { name: strings.pl.nav.how }).click()
+  await expect(page).toHaveTitle(strings.pl.home.title)
+  await expect(page.locator("#steps")).toBeInViewport()
+  await expect(page.locator("#steps")).toHaveClass(/is-target/)
+  expect(new URL(page.url()).hash).toBe("")
 })
 
 test("without ads (a build with no AdSense ids renders no rails) the content keeps its full width", async ({ page, isMobile }) => {

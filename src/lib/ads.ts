@@ -33,10 +33,16 @@ declare global {
  * A unit hidden by CSS (the rails on a narrow screen, the inline unit on
  * a wide one) has no width, and an ad unit without a width must not be
  * requested, so those wait until the screen width changes.
+ *
+ * Each push({}) fills the first `ins.adsbygoogle` AdSense has not seen, in
+ * page order, whatever we meant. So a unit is an `ins.ad-unit` until it is
+ * requested, and only then gets the adsbygoogle class: otherwise the hidden
+ * inline unit (between the rails in the page) took the right rail's turn.
  */
 export function fillAds() {
-  document.querySelectorAll<HTMLElement>("ins.adsbygoogle:not([data-adsbygoogle-status])").forEach((unit) => {
+  document.querySelectorAll<HTMLElement>("ins.ad-unit:not(.adsbygoogle)").forEach((unit) => {
     if (unit.offsetWidth === 0) return
+    unit.classList.add("adsbygoogle")
     ;(window.adsbygoogle = window.adsbygoogle ?? []).push({})
   })
 }

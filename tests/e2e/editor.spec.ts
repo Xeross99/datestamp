@@ -162,3 +162,20 @@ test.describe("options", () => {
     await expect(page.locator('#select-format el-option[value="mdy"]')).toHaveCount(1)
   })
 })
+
+test("with a mouse a long album scrolls inside the editor; on a touch screen the page scrolls", async ({ page, isMobile }) => {
+  await visit(page)
+  const photo = await readFile(fixture("no-exif-square.jpg"))
+  const files = Array.from({ length: 16 }, (_, i) => ({ name: `photo-${i}.jpg`, mimeType: "image/jpeg", buffer: photo }))
+  await page.locator("[data-input]").setInputFiles(files)
+  await expect(page.locator('.photo[data-state="ready"]')).toHaveCount(16)
+  const grid = page.locator("[data-photos]")
+  if (isMobile) {
+    await expect(grid).toHaveCSS("overflow-y", "visible")
+  } else {
+    await expect(grid).toHaveCSS("overflow-y", "auto")
+    expect((await grid.boundingBox())!.height).toBeLessThanOrEqual(388 + 1)
+    expect(await grid.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true)
+  }
+  await expect(page.locator(".photo [data-remove]").first()).toHaveCSS("cursor", "pointer")
+})
