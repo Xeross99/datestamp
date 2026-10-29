@@ -10,6 +10,8 @@ describe("formatDate", () => {
     ["dmy-time", "04.07.2026 09:05"],
     ["dmy-slash", "04/07/2026"],
     ["dmy-slash-time", "04/07/2026 09:05"],
+    ["dmy-dash", "04-07-2026"],
+    ["dmy-dash-time", "04-07-2026 09:05"],
     ["mdy", "07/04/2026"],
     ["iso", "2026-07-04"],
   ])("%s → %s", (format, expected) => {

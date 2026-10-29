@@ -10,6 +10,11 @@ import es from "./es"
 import fr from "./fr"
 import it from "./it"
 import pt from "./pt"
+import nl from "./nl"
+import cs from "./cs"
+import tr from "./tr"
+import ro from "./ro"
+import id from "./id"
 
 export { defaultLocale, locales, ogLocales, type Locale }
 
@@ -17,18 +22,23 @@ export type Strings = typeof en
 export type EditorStrings = Strings["editor"]
 
 /**
- * Polish typesetting: a one-letter word (a, i, o, u, w, z) must not end a
- * line, so the space after it is a non-breaking one. Applied to every Polish
- * string here rather than typed into pl.ts, where it would be invisible.
+ * Polish and Czech typesetting: a one-letter word (pl: a, i, o, u, w, z;
+ * cs: a, i, k, o, s, u, v, z) must not end a line, so the space after it is
+ * a non-breaking one. Applied to every string here rather than typed into
+ * the locale files, where it would be invisible.
  */
-function keepOneLetterWords<T>(value: T): T {
-  if (typeof value === "string") return value.replace(/(?<=^|[\s(„"])([aiouwzAIOUWZ]) /g, "$1\u00a0") as T
-  if (Array.isArray(value)) return value.map(keepOneLetterWords) as T
-  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, keepOneLetterWords(item)])) as T
-  return value
+function keepOneLetterWords<T>(value: T, letters: string): T {
+  const word = new RegExp(`(?<=^|[\\s(„"])([${letters}${letters.toUpperCase()}]) `, "g")
+  const walk = (item: unknown): unknown => {
+    if (typeof item === "string") return item.replace(word, "$1\u00a0")
+    if (Array.isArray(item)) return item.map(walk)
+    if (item && typeof item === "object") return Object.fromEntries(Object.entries(item).map(([key, child]) => [key, walk(child)]))
+    return item
+  }
+  return walk(value) as T
 }
 
-export const strings: Record<Locale, Strings> = { en, pl: keepOneLetterWords(pl), de, es, fr, it, pt }
+export const strings: Record<Locale, Strings> = { en, pl: keepOneLetterWords(pl, "aiouwz"), de, es, fr, it, pt, nl, cs: keepOneLetterWords(cs, "aikosuvz"), tr, ro, id }
 
 export const t = (locale: Locale) => strings[locale]
 

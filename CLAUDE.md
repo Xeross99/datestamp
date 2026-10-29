@@ -192,15 +192,15 @@ A **stacked layout** after Tailwind's Catalyst (owner's choice): a navbar on the
 - The sliding highlight under the picked theme is positioned by CSS from `data-theme` alone, so it is right before JS runs.
 - The theme switch and the language button are both 34 px tall (`h-8.5`); keep them equal. The owner prefers them this compact (a 52 px version was tried and rejected).
 - Dark theme values were lightened at the owner's request (bg `#2a2826`, cards `#34322f`); `--photo` is the stand-in photo colour, darker than the cards in the dark theme.
-- The language menu is a `<details>` with an SVG flag per language (`Flag.astro`). The flag stands for the readers, not a country: en is the United Kingdom, pt is Brazil (the Portuguese copy is Brazilian). A new locale needs a flag there.
+- The language menu is a `<details>` with an SVG flag per language (`Flag.astro`). The flag stands for the readers, not a country: en is the United Kingdom, pt is Brazil (the Portuguese copy is Brazilian), nl the Netherlands, cs Czechia, tr Turkey, ro Romania, id Indonesia. A new locale needs a flag there.
 
 ## i18n and SEO
 
-Locales: **en (default, no prefix), pl, de, es, fr, it, pt**, each under `/<locale>/`.
+Locales: **en (default, no prefix), pl, de, es, fr, it, pt, nl, cs, tr, ro, id**, each under `/<locale>/`. nl writes dates 14-07-2026 (`dmy-dash`); cs, like pl, gets non-breaking spaces after one-letter words.
 
 - **All user-facing text lives in `src/i18n/<locale>.ts`.** Never hardcode copy in components. Polish strings get a non-breaking space after every one-letter word (a, i, o, u, w, z) in `src/i18n/index.ts` (`keepOneLetterWords`), so none ends a line; type plain spaces in pl.ts. `en.ts` is the reference shape; the others end with `satisfies typeof en`, so `npm run check` fails when a key is missing.
 - **Slugs are translated** (`slugs` in each locale file), because the slug is a ranking signal in the searcher's language: `/de/datum-auf-foto-iphone/`, `/pl/jak-dodac-date-do-zdjecia-na-iphonie/`.
-- Pages: `home`, the guides (`guidePages`: `iphone`, `android`, `windows`, `mac`, `batch` = many photos at once, `screenshot`, `timestamp` = date and time for reports and claims, `scanned` = old and scanned photos with the date typed in, `retro` = the old-camera date effect), `privacy`. 11 pages × 7 locales = 77.
+- Pages: `home`, the guides (`guidePages`: `iphone`, `android`, `windows`, `mac`, `batch` = many photos at once, `screenshot`, `timestamp` = date and time for reports and claims, `scanned` = old and scanned photos with the date typed in, `retro` = the old-camera date effect), `privacy`. 11 pages × 12 locales = 132.
 - `pathOf(page, locale)` gives a page's path and `href(path)` adds the base path (GitHub Pages serves under `/<repo>/`). **Always build internal links and asset URLs with `href()`**, never a bare `/…`, or they break on GitHub Pages.
 - Every page outputs a canonical URL, `hreflang` alternates for every locale plus `x-default` (English), and JSON-LD: `WebApplication` on every page, `FAQPage` on home, `HowTo` on guides.
 - The sitemap's i18n option pairs pages only when their paths match after the locale prefix, so it links the home pages but not the translated-slug guides. The `hreflang` tags in `<head>` cover those; that is enough for Google.

@@ -5,11 +5,11 @@
 import { chromium } from "@playwright/test"
 import { spawn } from "node:child_process"
 import { mkdir, readFile } from "node:fs/promises"
+import { locales } from "../src/i18n/locales.ts"
 
 const PORT = 4330
 const root = new URL("../", import.meta.url)
 const out = (path) => new URL(`public/${path}`, root).pathname
-const locales = ["en", "pl", "de", "es", "fr", "it", "pt"]
 
 const svg = await readFile(new URL("public/favicon.svg", root), "utf8")
 // Full-bleed versions: iOS and Android mask the corners themselves, and a

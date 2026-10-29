@@ -7,7 +7,7 @@ export type StampPosition = "bottom-right" | "bottom-left" | "top-right" | "top-
 // Every format the editor offers. Which ones a page lists, and in which
 // order, is the locale's choice (`dateFormats` in src/i18n/<locale>.ts):
 // the country's own way of writing a date comes first.
-export type DateFormat = "retro" | "dmy" | "dmy-time" | "dmy-slash" | "dmy-slash-time" | "mdy" | "iso"
+export type DateFormat = "retro" | "dmy" | "dmy-time" | "dmy-slash" | "dmy-slash-time" | "dmy-dash" | "dmy-dash-time" | "mdy" | "iso"
 
 export interface StampOptions {
   style: StampStyle
@@ -62,6 +62,11 @@ export function formatDate(date: Date, format: DateFormat): string {
       return `${y}-${pad(m)}-${pad(d)}`
     case "dmy-time":
       return `${pad(d)}.${pad(m)}.${y} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+    // The Dutch way: 14-07-2026
+    case "dmy-dash":
+      return `${pad(d)}-${pad(m)}-${y}`
+    case "dmy-dash-time":
+      return `${pad(d)}-${pad(m)}-${y} ${pad(date.getHours())}:${pad(date.getMinutes())}`
   }
 }
 

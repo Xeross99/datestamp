@@ -2,7 +2,7 @@
 // can import it (the sitemap's hreflang list) without loading the
 // translations. A new locale: add it here and add src/i18n/<locale>.ts.
 
-export const locales = ["en", "pl", "de", "es", "fr", "it", "pt"] as const
+export const locales = ["en", "pl", "de", "es", "fr", "it", "pt", "nl", "cs", "tr", "ro", "id"] as const
 export type Locale = (typeof locales)[number]
 
 /** Served without a prefix (/), every other locale under /<locale>/. */
@@ -17,4 +17,9 @@ export const ogLocales: Record<Locale, string> = {
   fr: "fr_FR",
   it: "it_IT",
   pt: "pt_BR",
+  nl: "nl_NL",
+  cs: "cs_CZ",
+  tr: "tr_TR",
+  ro: "ro_RO",
+  id: "id_ID",
 }

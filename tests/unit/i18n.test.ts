@@ -51,6 +51,12 @@ describe("translations", () => {
     expect(new Set(formats).size).toBe(formats.length)
   })
 
+  it("never leaves a Czech one-letter word at the end of a line", () => {
+    const texts = (value: unknown): string[] =>
+      typeof value === "string" ? [value] : value && typeof value === "object" ? Object.values(value).flatMap(texts) : []
+    for (const text of texts(strings.cs)) expect(text, text).not.toMatch(/(?<=^|[\s(„"])[aikosuvzAIKOSUVZ] /)
+  })
+
   it("never leaves a Polish one-letter word at the end of a line", () => {
     const texts = (value: unknown): string[] =>
       typeof value === "string" ? [value] : value && typeof value === "object" ? Object.values(value).flatMap(texts) : []
