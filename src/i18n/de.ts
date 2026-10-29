@@ -145,6 +145,13 @@ export default {
     ],
     contact: "Fragen zum Datenschutz: {email}",
   },
+  notFound: {
+    title: "Seite nicht gefunden | DateStamp",
+    h1: "Diese Seite gibt es nicht",
+    body: "Vielleicht ist die Adresse vertippt oder die Seite umgezogen. Das Werkzeug für das Datum auf Fotos ist nur einen Klick entfernt.",
+    cta: "Datum auf Foto hinzufügen",
+    guides: "Oder lies eine Anleitung:",
+  },
   editor: {
     pick: "Fotos auswählen",
     privacy: "Fotos bleiben auf deinem Gerät",

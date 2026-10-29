@@ -145,6 +145,13 @@ export default {
     ],
     contact: "Domande sulla privacy: {email}",
   },
+  notFound: {
+    title: "Pagina non trovata | DateStamp",
+    h1: "Questa pagina non esiste",
+    body: "Forse l'indirizzo contiene un errore o la pagina è stata spostata. Lo strumento per aggiungere la data alle foto è a un clic.",
+    cta: "Aggiungi la data a una foto",
+    guides: "Oppure leggi una guida:",
+  },
   editor: {
     pick: "Scegli foto",
     privacy: "Le foto restano sul tuo dispositivo",

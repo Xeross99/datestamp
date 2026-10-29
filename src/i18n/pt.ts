@@ -145,6 +145,13 @@ export default {
     ],
     contact: "Dúvidas sobre privacidade: {email}",
   },
+  notFound: {
+    title: "Página não encontrada | DateStamp",
+    h1: "Esta página não existe",
+    body: "Talvez o endereço esteja errado ou a página tenha mudado de lugar. A ferramenta para colocar data na foto está a um clique.",
+    cta: "Colocar data na foto",
+    guides: "Ou leia um guia:",
+  },
   editor: {
     pick: "Escolher fotos",
     privacy: "As fotos ficam no seu aparelho",

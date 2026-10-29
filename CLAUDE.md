@@ -83,6 +83,7 @@ src/
     progress.ts           the progress bar (start/step/percent/finish/fail/hold)
     theme.ts              light/dark/system
     ads.ts                AdSense config from env, fillAds(), RAILS_MIN_WIDTH
+  pages/404.astro         the page GitHub Pages serves for any missing address: every locale's copy, a script shows the path's (else the browser's) language; noindex, no ads
   pages/ads.txt.ts        ads.txt generated from the publisher id
   pages/robots.txt.ts     robots.txt (all crawlers, AI ones named) + sitemap
   pages/llms.txt.ts       llms.txt for AI assistants, generated from the strings

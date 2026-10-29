@@ -145,6 +145,13 @@ export default {
     ],
     contact: "Pytania dotyczące prywatności: {email}",
   },
+  notFound: {
+    title: "Nie ma takiej strony | DateStamp",
+    h1: "Nie ma takiej strony",
+    body: "Adres może mieć literówkę albo strona została przeniesiona. Narzędzie do dodawania daty do zdjęć jest o jedno kliknięcie stąd.",
+    cta: "Dodaj datę do zdjęcia",
+    guides: "Albo zajrzyj do poradnika:",
+  },
   editor: {
     pick: "Wybierz zdjęcia",
     privacy: "Zdjęcia zostają na Twoim urządzeniu",

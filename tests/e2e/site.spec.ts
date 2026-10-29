@@ -194,6 +194,17 @@ test("on the home page the inline ad sits after the examples, before the FAQ, aw
   expect(adTop).toBeLessThan(await top("#faq"))
 })
 
+test("a missing address shows the 404 page in the language of its path, not indexed and without ads", async ({ page }) => {
+  const response = await page.goto("/pl/nie-ma-takiej-strony/")
+  expect(response?.status()).toBe(404)
+  await expect(page.locator("html")).toHaveAttribute("lang", "pl")
+  await expect(page).toHaveTitle(strings.pl.notFound.title)
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(strings.pl.notFound.h1)
+  await expect(page.getByRole("link", { name: strings.pl.notFound.cta })).toHaveAttribute("href", /\/pl\/$/)
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex")
+  await expect(page.locator('link[rel="canonical"], script[type="application/ld+json"], ins.adsbygoogle')).toHaveCount(0)
+})
+
 test("without ads (a build with no AdSense ids renders no rails) the content keeps its full width", async ({ page, isMobile }) => {
   test.skip(isMobile, "the rails exist only on wide screens")
   await page.setViewportSize({ width: 1440, height: 900 })

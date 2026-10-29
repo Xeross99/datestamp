@@ -15,9 +15,15 @@ interface Props {
   description: string
   /** Page-specific JSON-LD nodes (FAQPage, HowTo...), joined into the page's @graph. */
   schema?: Record<string, unknown>[]
+  /**
+   * The 404 page: not indexed, so no canonical, hreflang or JSON-LD, and
+   * no ads (AdSense allows none on a page without content). `page` is then
+   * only where the language menu leads.
+   */
+  notFound?: boolean
 }
 
-const { locale, page, title, description, schema = [] } = Astro.props
+const { locale, page, title, description, schema = [], notFound = false } = Astro.props
 const strings = t(locale)
 const absoluteUrl = (path: string) => new URL(href(path), Astro.site).href
 const absolute = (other: Locale) => absoluteUrl(pathOf(page, other))
@@ -63,11 +69,12 @@ const icon = (path: string) => `${href(path)}?v=${ICON_VERSION}`
 
 // The navbar: the editor and its sections on the home page, the guide.
 const homePath = href(pathOf("home", locale))
+const onHome = page === "home" && !notFound
 const navItems = [
-  { label: strings.nav.editor, href: homePath, current: page === "home", section: page === "home" ? "top" : undefined },
-  { label: strings.nav.how, href: `${homePath}#steps`, current: false, section: page === "home" ? "steps" : undefined },
-  { label: strings.nav.faq, href: `${homePath}#faq`, current: false, section: page === "home" ? "faq" : undefined },
-  { label: strings.nav.guides, href: `${homePath}#guides`, current: isGuide(page), section: page === "home" ? "guides" : undefined },
+  { label: strings.nav.editor, href: homePath, current: onHome, section: onHome ? "top" : undefined },
+  { label: strings.nav.how, href: `${homePath}#steps`, current: false, section: onHome ? "steps" : undefined },
+  { label: strings.nav.faq, href: `${homePath}#faq`, current: false, section: onHome ? "faq" : undefined },
+  { label: strings.nav.guides, href: `${homePath}#guides`, current: isGuide(page), section: onHome ? "guides" : undefined },
 ]
 
 // One @graph per page: the site, the tool itself, this page (with its
@@ -143,16 +150,24 @@ const jsonLd = {
     </script>
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-    <link rel="canonical" href={canonical} />
-    {locales.map((other) => <link rel="alternate" hreflang={other} href={absolute(other)} />)}
-    <link rel="alternate" hreflang="x-default" href={absolute(defaultLocale)} />
+    {
+      notFound ? (
+        <meta name="robots" content="noindex" />
+      ) : (
+        <>
+          <meta name="robots" content="index, follow, max-image-preview:large" />
+          <link rel="canonical" href={canonical} />
+          {locales.map((other) => <link rel="alternate" hreflang={other} href={absolute(other)} />)}
+          <link rel="alternate" hreflang="x-default" href={absolute(defaultLocale)} />
+        </>
+      )
+    }
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="DateStamp" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
+    {!notFound && <meta property="og:url" content={canonical} />}
     <meta property="og:locale" content={ogLocales[locale]} />
     {locales.filter((other) => other !== locale).map((other) => <meta property="og:locale:alternate" content={ogLocales[other]} />)}
     <meta property="og:image" content={ogImage} />
@@ -179,7 +194,7 @@ const jsonLd = {
     <link rel="sitemap" href={href("/sitemap-index.xml")} />
     <!-- For AI assistants and answer engines: what the site is, in plain text. -->
     <link rel="alternate" type="text/plain" title="llms.txt" href={href("/llms.txt")} />
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {!notFound && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     {(adsense.client || gaId) && <script is:inline set:html={consentScript} />}
     {
       adsense.client && (
@@ -322,7 +337,7 @@ const jsonLd = {
       <main class="flex flex-1 flex-col pb-2 lg:px-2">
         <div class="grow lg:rounded-xl lg:bg-page lg:px-6 lg:shadow-xs lg:ring-1 lg:ring-line">
           <div class="page">
-            <AdRail side="left" locale={locale} />
+            {!notFound && <AdRail side="left" locale={locale} />}
             <div class="page-content mx-auto w-full max-w-240 min-w-0 px-4 lg:px-0">
               <slot />
               <footer class="mt-8 border-t border-line">
@@ -341,7 +356,7 @@ const jsonLd = {
                 </div>
               </footer>
             </div>
-            <AdRail side="right" locale={locale} />
+            {!notFound && <AdRail side="right" locale={locale} />}
           </div>
         </div>
       </main>

@@ -148,6 +148,13 @@ export default {
     ],
     contact: "Questions about privacy: {email}",
   },
+  notFound: {
+    title: "Page not found | DateStamp",
+    h1: "This page isn't here",
+    body: "The address may be mistyped, or the page has moved. The tool that puts the date on your photos is one click away.",
+    cta: "Add the date to a photo",
+    guides: "Or read a guide:",
+  },
   editor: {
     pick: "Choose photos",
     privacy: "Photos stay on your device",

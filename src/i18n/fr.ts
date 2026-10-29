@@ -145,6 +145,13 @@ export default {
     ],
     contact: "Questions sur la confidentialité : {email}",
   },
+  notFound: {
+    title: "Page introuvable | DateStamp",
+    h1: "Cette page n'existe pas",
+    body: "L'adresse contient peut-être une faute de frappe, ou la page a été déplacée. L'outil pour ajouter la date sur vos photos est à un clic.",
+    cta: "Ajouter la date sur une photo",
+    guides: "Ou lisez un guide :",
+  },
   editor: {
     pick: "Choisir des photos",
     privacy: "Les photos restent sur votre appareil",
