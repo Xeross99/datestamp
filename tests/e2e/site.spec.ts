@@ -93,7 +93,9 @@ test("the navbar links the page's sections; on a phone they are in a menu that c
   if (!isMobile) {
     await expect(page.locator('header nav > ul a[aria-current="page"]')).toHaveText(strings.pl.nav.editor)
     await page.locator("header nav").getByRole("link", { name: strings.pl.nav.faq }).click()
-    await expect(page).toHaveURL(/#faq$/)
+    // It only scrolls: the address gets no #faq.
+    await expect(page.locator("#faq")).toBeInViewport()
+    expect(new URL(page.url()).hash).toBe("")
     // The heading it landed on lights up, and the underline has moved under "FAQ".
     await expect(page.locator("#faq")).toHaveClass(/is-target/)
     const underline = page.locator("[data-nav-indicator]")
@@ -111,7 +113,8 @@ test("the navbar links the page's sections; on a phone they are in a menu that c
   const faqLink = page.locator("#mobile-menu").getByRole("link", { name: strings.pl.nav.faq })
   await expect(faqLink).toBeVisible()
   await faqLink.click()
-  await expect(page).toHaveURL(/#faq$/)
+  await expect(page.locator("#faq")).toBeInViewport()
+  expect(new URL(page.url()).hash).toBe("")
   await expect(faqLink).toBeHidden()
 })
 

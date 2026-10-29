@@ -411,11 +411,29 @@ const jsonLd = {
         }
         requestAnimationFrame(check)
       }
+      // A link to a section of this page only scrolls there: no #section is
+      // added to the address (and "Add date" on the home page scrolls to the
+      // top instead of reloading it). The scroll follows CSS scroll-behavior,
+      // so it is smooth unless the visitor asked for less motion.
       document.addEventListener("click", (event) => {
-        const link = (event.target as Element).closest<HTMLAnchorElement>('a[href*="#"]')
-        if (link && link.pathname === location.pathname) highlight(decodeURIComponent(link.hash.slice(1)))
+        const link = (event.target as Element).closest<HTMLAnchorElement>("a[href]")
+        if (!link || link.pathname !== location.pathname || link.origin !== location.origin) return
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target) return // a new tab or window
+        const id = decodeURIComponent(link.hash.slice(1))
+        const target = id ? document.getElementById(id) : null
+        if (id && !target) return
+        event.preventDefault()
+        if (target) {
+          target.scrollIntoView({ block: "start" })
+          highlight(id)
+        } else scrollTo({ top: 0 })
       })
-      if (location.hash) highlight(decodeURIComponent(location.hash.slice(1)))
+      // Arriving with a hash (a section link from another page): highlight it,
+      // then drop the hash from the address.
+      if (location.hash) {
+        highlight(decodeURIComponent(location.hash.slice(1)))
+        history.replaceState(history.state, "", location.pathname + location.search)
+      }
 
       // The navbar's underline: under the current page's item, and on the home
       // page under the section being read (the last one whose top has passed
