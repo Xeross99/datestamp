@@ -151,7 +151,13 @@ export function mountEditor(root: HTMLElement) {
   // dragenter/dragleave fire for every child element, so a counter tells
   // when the drag has really left the window.
   let dragDepth = 0
-  const draggingFiles = (event: DragEvent) => event.dataTransfer?.types.includes("Files") ?? false
+  // A drag that starts on the page (a sample photo, a link, selected text)
+  // is not a photo from the visitor: a browser can offer a dragged <img> as
+  // a file, and a slight drag of an example would add it to the editor.
+  let fromPage = false
+  document.addEventListener("dragstart", () => (fromPage = true))
+  document.addEventListener("dragend", () => (fromPage = false))
+  const draggingFiles = (event: DragEvent) => !fromPage && (event.dataTransfer?.types.includes("Files") ?? false)
   document.addEventListener("dragenter", (event) => {
     if (!draggingFiles(event)) return
     dragDepth++

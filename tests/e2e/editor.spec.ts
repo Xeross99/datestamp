@@ -43,6 +43,37 @@ test.describe("adding photos", () => {
     await expect(page.locator('.photo[data-state="ready"]')).toHaveCount(1)
   })
 
+  test("a sample photo dragged on the page is not added to the editor", async ({ page }) => {
+    await visit(page)
+    const example = page.locator("#examples ~ div img").first()
+    await expect(example).toHaveAttribute("draggable", "false")
+    // Even if a browser drags it anyway and offers it as a file.
+    const bytes = (await readFile(PHOTOS[0])).toString("base64")
+    await example.evaluate(async (image, base64) => {
+      const blob = await (await fetch(`data:image/jpeg;base64,${base64}`)).blob()
+      const transfer = new DataTransfer()
+      transfer.items.add(new File([blob], "sample.jpg", { type: "image/jpeg" }))
+      image.dispatchEvent(new DragEvent("dragstart", { bubbles: true, dataTransfer: transfer }))
+      const zone = document.querySelector("[data-dropzone]")!
+      for (const type of ["dragenter", "dragover", "drop"])
+        zone.dispatchEvent(new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: transfer }))
+      image.dispatchEvent(new DragEvent("dragend", { bubbles: true, dataTransfer: transfer }))
+    }, bytes)
+    await page.waitForTimeout(500)
+    await expect(page.locator(".photo")).toHaveCount(0)
+    await expect(page.locator("[data-dropzone]")).not.toHaveAttribute("data-dragging")
+
+    // A photo from outside the page still drops in afterwards.
+    await page.evaluate(async (base64) => {
+      const blob = await (await fetch(`data:image/jpeg;base64,${base64}`)).blob()
+      const transfer = new DataTransfer()
+      transfer.items.add(new File([blob], "dropped.jpg", { type: "image/jpeg" }))
+      for (const type of ["dragenter", "dragover", "drop"])
+        document.body.dispatchEvent(new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: transfer }))
+    }, bytes)
+    await expect(page.locator('.photo[data-state="ready"]')).toHaveCount(1)
+  })
+
   test("says so when a file is not a photo", async ({ page }) => {
     await visit(page)
     await page.locator("[data-input]").setInputFiles(fixture("not-a-photo.txt"))

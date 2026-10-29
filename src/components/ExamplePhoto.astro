@@ -31,6 +31,7 @@ const { sample, alt, style, date, corner } = Astro.props
     fallbackFormat="webp"
     loading="lazy"
     decoding="async"
+    draggable="false"
   />
   <span class:list={["stamp absolute bottom-3 text-[15px]", corner === "bottom-right" ? "right-3.5" : "left-3.5"]} data-style={style}>{date}</span>
 </div>
