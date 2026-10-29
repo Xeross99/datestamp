@@ -190,6 +190,7 @@ export default {
     doneHint: "Les photos prêtes ont un cadre vert.",
   },
   nav: { editor: "Ajouter la date", how: "Comment ça marche", faq: "Questions", guides: "Guides", menu: "Menu", close: "Fermer le menu" },
+  install: { label: "Installer l'app", iosHint: "Touchez Partager, puis « Sur l'écran d'accueil »." },
   consent: {
     text: "Nous utilisons des cookies pour les statistiques de visite (Google Analytics) et pour les publicités qui rendent ce site gratuit (Google AdSense). Les deux sont facultatifs. Vos photos ne sont jamais envoyées. Détails dans notre",
     policy: "politique de confidentialité",

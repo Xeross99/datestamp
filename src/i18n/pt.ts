@@ -190,6 +190,7 @@ export default {
     doneHint: "Fotos prontas têm moldura verde.",
   },
   nav: { editor: "Colocar data", how: "Como funciona", faq: "Perguntas", guides: "Guias", menu: "Menu", close: "Fechar menu" },
+  install: { label: "Instalar o app", iosHint: "Toque em Compartilhar e depois em “Adicionar à Tela de Início”." },
   consent: {
     text: "Usamos cookies para estatísticas de visitas (Google Analytics) e para os anúncios que mantêm este site grátis (Google AdSense). Ambos são opcionais. Suas fotos nunca são enviadas. Detalhes na",
     policy: "política de privacidade",

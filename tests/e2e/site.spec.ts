@@ -133,18 +133,65 @@ test("the navbar links the page's sections; on a phone they are in a menu that c
   // The <dialog> itself has no size (its sheet is fixed), so look at its links.
   const faqLink = page.locator("#mobile-menu").getByRole("link", { name: strings.pl.nav.faq })
   await expect(faqLink).toBeVisible()
-  // The tint is a layer over the whole page (it goes under iOS Safari's bars),
-  // not the dialog's fixed backdrop.
+  // Panel and tint are absolute on the page, not fixed to the screen (that
+  // turns iOS Safari's bars opaque): the tint covers the whole page, the
+  // page's scroll is locked, and the panel has no transform while open.
   const shade = page.locator("[data-menu-shade]")
+  const panel = page.locator("#mobile-menu")
   await expect(shade).toHaveAttribute("data-open", "")
   await expect(shade).toHaveCSS("position", "absolute")
+  await expect(panel).toHaveCSS("position", "absolute")
+  await expect(panel).toHaveCSS("translate", "none")
   expect((await shade.boundingBox())!.height).toBeGreaterThanOrEqual(await page.evaluate(() => document.documentElement.scrollHeight) - 1)
-  await expect(page.locator("#mobile-menu el-dialog-backdrop")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+  await expect(page.locator("html")).toHaveCSS("overflow", "hidden")
   await faqLink.click()
   await expect(page.locator("#faq")).toBeInViewport()
   expect(new URL(page.url()).hash).toBe("")
   await expect(faqLink).toBeHidden()
   await expect(shade).not.toHaveAttribute("data-open")
+  await expect(page.locator("html")).not.toHaveCSS("overflow", "hidden")
+
+  // Escape and a tap beside the sheet close it too.
+  await page.getByRole("button", { name: strings.pl.nav.menu }).click()
+  await expect(faqLink).toBeVisible()
+  await page.keyboard.press("Escape")
+  await expect(faqLink).toBeHidden()
+  await page.getByRole("button", { name: strings.pl.nav.menu }).click()
+  await expect(faqLink).toBeVisible()
+  await page.mouse.click(380, 400)
+  await expect(faqLink).toBeHidden()
+})
+
+test.describe("install the app", () => {
+  test("in Chrome the menu's button opens the browser's install prompt", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "the menu is for narrow screens")
+    await page.goto(pathOf("home", "pl"))
+    const install = page.locator("#mobile-menu").getByRole("button", { name: strings.pl.install.label })
+    await page.getByRole("button", { name: strings.pl.nav.menu }).click()
+    await expect(install).toBeHidden() // no prompt offered yet
+    await page.evaluate(() => {
+      const event = Object.assign(new Event("beforeinstallprompt", { cancelable: true }), {
+        prompt: () => ((window as unknown as { prompted: boolean }).prompted = true) && Promise.resolve(),
+      })
+      dispatchEvent(event)
+    })
+    await install.click()
+    expect(await page.evaluate(() => (window as unknown as { prompted?: boolean }).prompted)).toBe(true)
+    await expect(install).toBeHidden()
+  })
+
+  test.describe("on an iPhone", () => {
+    test.use({ userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1" })
+    test("the button shows how to add it from the Share menu", async ({ page, isMobile }) => {
+      test.skip(!isMobile, "the menu is for narrow screens")
+      await page.goto(pathOf("home", "pl"))
+      await page.getByRole("button", { name: strings.pl.nav.menu }).click()
+      const hint = page.locator("#mobile-menu").getByText(strings.pl.install.iosHint)
+      await expect(hint).toBeHidden()
+      await page.locator("#mobile-menu").getByRole("button", { name: strings.pl.install.label }).click()
+      await expect(hint).toBeVisible()
+    })
+  })
 })
 
 test.describe("cookie banner", () => {

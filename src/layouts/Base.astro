@@ -220,13 +220,12 @@ const jsonLd = {
          the page in one rounded panel. From lg up the panel floats on the
          frame; below lg the panel is the page itself. -->
     <div class="relative isolate flex min-h-svh w-full flex-col bg-page lg:bg-frame">
-      <!-- The mobile menu's shade. Not the dialog's own backdrop: a fixed
-           full-screen layer leaves iOS Safari's status bar and toolbar
-           undimmed (light bands at the top and bottom). An absolute layer
-           over the whole page goes under the bars too. Shown by the script
-           below while the menu is open. -->
+      <!-- The mobile menu's shade: absolute over the whole page, not fixed to
+           the screen, so it goes under iOS Safari's bars and they stay
+           see-through. Shown by the script below while the menu is open; a
+           tap on it closes the menu. -->
       <div
-        class="pointer-events-none absolute inset-0 z-50 bg-black/30 opacity-0 transition-opacity duration-300 ease-out data-open:opacity-100 motion-reduce:transition-none lg:hidden"
+        class="pointer-events-none absolute inset-0 z-50 bg-black/30 data-open:pointer-events-auto opacity-0 transition-opacity duration-300 ease-out data-open:opacity-100 motion-reduce:transition-none lg:hidden"
         aria-hidden="true"
         data-menu-shade
       ></div>
@@ -234,8 +233,9 @@ const jsonLd = {
         <div class="py-2.5 lg:hidden">
           <button
             type="button"
-            command="show-modal"
-            commandfor="mobile-menu"
+            aria-controls="mobile-menu"
+            aria-expanded="false"
+            data-menu-open
             class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-ink hover:bg-ink/5"
             aria-label={strings.nav.menu}
           >
@@ -306,53 +306,74 @@ const jsonLd = {
         </nav>
       </header>
 
-      <!-- The mobile menu: a sheet from the left with the same links. -->
-      <el-dialog>
-        <dialog id="mobile-menu" class="backdrop:bg-transparent lg:hidden" aria-label={strings.nav.menu}>
-          <!-- Transparent: the tint is the page's [data-menu-shade]. -->
-          <el-dialog-backdrop class="fixed inset-0"></el-dialog-backdrop>
-          <div tabindex="0" class="fixed inset-0 flex focus:outline-none">
-            <el-dialog-panel class="relative flex w-full max-w-80 p-2 transition duration-300 ease-out data-closed:-translate-x-full motion-reduce:transition-none">
-              <div class="flex h-full w-full flex-col rounded-xl bg-page shadow-xs ring-1 ring-line">
-                <div class="flex items-center justify-between border-b border-line p-4">
-                  <span class="flex items-center gap-2 text-[19px] font-extrabold tracking-tight">
-                    <LogoMark class="size-7 flex-none rounded-[7px] ring-1 ring-ink/10" />
-                    <span>Date<span class="text-accent">Stamp</span></span>
-                  </span>
-                  <button
-                    type="button"
-                    command="close"
-                    commandfor="mobile-menu"
-                    class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-ink hover:bg-ink/5"
-                    aria-label={strings.nav.close}
-                  >
-                    <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"></path></svg>
-                  </button>
-                </div>
-                <ul class="flex flex-col gap-0.5 p-4">
-                  {
-                    navItems.map((item) => (
-                      <li>
-                        <a
-                          class="flex min-h-11 items-center rounded-lg px-3 text-base font-medium text-ink no-underline hover:bg-ink/5 aria-[current=page]:bg-ink/5"
-                          href={item.href}
-                          aria-current={item.current ? "page" : undefined}
-                        >
-                          {item.label}
-                        </a>
-                      </li>
-                    ))
-                  }
-                </ul>
-                <div class="mt-auto flex items-center justify-between border-t border-line p-4 text-sm font-medium">
-                  {strings.theme.label}
-                  <ThemeSwitch locale={locale} />
-                </div>
+      <!-- The mobile menu: a sheet from the left with the same links. Not a
+           modal <dialog>: that sits in the top layer, fixed to the screen, and
+           iOS Safari then paints its status bar and toolbar opaque. An
+           absolute panel on the page instead, put at the scroll position
+           with the page's scroll locked (the script below), keeps them
+           see-through, as on magdalenakuznik.pl. Its translate is "none"
+           while open: an identity transform would still make it a layer. -->
+      <div
+        id="mobile-menu"
+        class="absolute left-0 z-50 flex h-svh w-full max-w-80 -translate-x-full p-2 transition-[translate] duration-300 ease-out data-open:translate-none motion-reduce:transition-none lg:hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-label={strings.nav.menu}
+        hidden
+        data-menu
+      >
+          <div class="flex h-full w-full flex-col rounded-xl bg-page shadow-xs ring-1 ring-line">
+            <div class="flex items-center justify-between border-b border-line p-4">
+              <span class="flex items-center gap-2 text-[19px] font-extrabold tracking-tight">
+                <LogoMark class="size-7 flex-none rounded-[7px] ring-1 ring-ink/10" />
+                <span>Date<span class="text-accent">Stamp</span></span>
+              </span>
+              <button
+                type="button"
+                data-menu-close
+                class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-ink hover:bg-ink/5"
+                aria-label={strings.nav.close}
+              >
+                <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"></path></svg>
+              </button>
+            </div>
+            <ul class="flex flex-col gap-0.5 p-4">
+              {
+                navItems.map((item) => (
+                  <li>
+                    <a
+                      class="flex min-h-11 items-center rounded-lg px-3 text-base font-medium text-ink no-underline hover:bg-ink/5 aria-[current=page]:bg-ink/5"
+                      href={item.href}
+                      aria-current={item.current ? "page" : undefined}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+            <div class="mt-auto">
+              <!-- Install as an app: Chrome and Edge's own prompt, or on an
+                   iPhone (no prompt there) how to do it from the Share menu.
+                   Shown by the script only where it can work. -->
+              <div class="border-t border-line p-4" data-install hidden>
+                <button
+                  type="button"
+                  class="flex min-h-11 w-full cursor-pointer items-center gap-3 rounded-lg px-3 text-left text-base font-medium text-ink hover:bg-ink/5"
+                  data-install-button
+                >
+                  <svg class="size-5 flex-none text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>
+                  {strings.install.label}
+                </button>
+                <p class="mt-1 px-3 text-sm text-muted" data-install-hint hidden>{strings.install.iosHint}</p>
               </div>
-            </el-dialog-panel>
+              <div class="flex items-center justify-between border-t border-line p-4 text-sm font-medium">
+                {strings.theme.label}
+                <ThemeSwitch locale={locale} />
+              </div>
+            </div>
           </div>
-        </dialog>
-      </el-dialog>
+      </div>
 
       <main class="flex flex-1 flex-col pb-2 lg:px-2">
         <div class="grow lg:rounded-xl lg:bg-page lg:px-6 lg:shadow-xs lg:ring-1 lg:ring-line">
@@ -388,19 +409,72 @@ const jsonLd = {
       import "@tailwindplus/elements"
       import { RAILS_MIN_WIDTH, fillAds } from "../lib/ads"
 
-      // A link to a section of this page (#steps) does not leave the page, so
-      // the menu closes itself on any link.
-      const menu = document.querySelector<HTMLDialogElement>("#mobile-menu")
-      menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => menu.close()))
-      // The shade follows the menu: in as it opens, out as its closing
-      // animation starts (Elements marks the backdrop data-closed then).
+      // The mobile menu (see its markup): opens at the scroll position with
+      // the page's scroll locked and the page behind it inert; closes with
+      // its X, a tap on the shade, Escape, or any of its links (a #section
+      // link does not leave the page).
+      const menu = document.querySelector<HTMLElement>("[data-menu]")
       const shade = document.querySelector<HTMLElement>("[data-menu-shade]")
-      const backdrop = menu?.querySelector("el-dialog-backdrop")
-      if (menu && shade && backdrop) {
-        const follow = () => shade.toggleAttribute("data-open", menu.open && !backdrop.hasAttribute("data-closed"))
-        const watch = new MutationObserver(follow)
-        watch.observe(menu, { attributes: true, attributeFilter: ["open"] })
-        watch.observe(backdrop, { attributes: true, attributeFilter: ["data-closed"] })
+      const opener = document.querySelector<HTMLButtonElement>("[data-menu-open]")
+      if (menu && shade && opener) {
+        const behind = [...document.querySelectorAll<HTMLElement>("body > div > header, body > div > main")]
+        const openMenu = () => {
+          menu.style.top = `${scrollY}px`
+          menu.hidden = false
+          document.documentElement.style.overflow = "hidden"
+          behind.forEach((element) => (element.inert = true))
+          opener.setAttribute("aria-expanded", "true")
+          void menu.offsetWidth // start the slide from off-screen
+          menu.dataset.open = ""
+          shade.dataset.open = ""
+          menu.querySelector("a")?.focus({ preventScroll: true })
+        }
+        const closeMenu = () => {
+          if (menu.hidden || !("open" in menu.dataset)) return
+          delete menu.dataset.open
+          delete shade.dataset.open
+          document.documentElement.style.overflow = ""
+          behind.forEach((element) => (element.inert = false))
+          opener.setAttribute("aria-expanded", "false")
+          if (menu.contains(document.activeElement)) opener.focus({ preventScroll: true })
+          const hide = () => {
+            if (!("open" in menu.dataset)) menu.hidden = true
+          }
+          if (matchMedia("(prefers-reduced-motion: reduce)").matches) hide()
+          else setTimeout(hide, 320)
+        }
+        opener.addEventListener("click", openMenu)
+        shade.addEventListener("click", closeMenu)
+        menu.querySelector("[data-menu-close]")?.addEventListener("click", closeMenu)
+        menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu))
+        addEventListener("keydown", (event) => event.key === "Escape" && closeMenu())
+        // Wider than lg the menu has no use: close it if the screen grows.
+        matchMedia("(min-width: 1024px)").addEventListener("change", closeMenu)
+      }
+
+      // "Install the app" in the menu. Chrome and Edge offer their own prompt
+      // (beforeinstallprompt); iOS has none, so there the button shows how to
+      // do it from Safari's Share menu. Not shown once running as the app.
+      const install = document.querySelector<HTMLElement>("[data-install]")
+      const installed = matchMedia("(display-mode: standalone)").matches || (navigator as { standalone?: boolean }).standalone === true
+      if (install && !installed) {
+        type InstallPrompt = Event & { prompt: () => Promise<unknown> }
+        let prompt: InstallPrompt | null = null
+        const hint = install.querySelector<HTMLElement>("[data-install-hint]")!
+        addEventListener("beforeinstallprompt", (event) => {
+          event.preventDefault()
+          prompt = event as InstallPrompt
+          install.hidden = false
+        })
+        const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+        if (ios) install.hidden = false
+        install.querySelector("[data-install-button]")?.addEventListener("click", async () => {
+          if (!prompt) return void (hint.hidden = !hint.hidden)
+          await prompt.prompt()
+          prompt = null
+          install.hidden = true
+        })
+        addEventListener("appinstalled", () => (install.hidden = true))
       }
 
       // Draw a marker scribble under the heading a link jumped to (.scribble
