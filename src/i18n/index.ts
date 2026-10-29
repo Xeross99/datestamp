@@ -16,7 +16,19 @@ export { defaultLocale, locales, ogLocales, type Locale }
 export type Strings = typeof en
 export type EditorStrings = Strings["editor"]
 
-export const strings: Record<Locale, Strings> = { en, pl, de, es, fr, it, pt }
+/**
+ * Polish typesetting: a one-letter word (a, i, o, u, w, z) must not end a
+ * line, so the space after it is a non-breaking one. Applied to every Polish
+ * string here rather than typed into pl.ts, where it would be invisible.
+ */
+function keepOneLetterWords<T>(value: T): T {
+  if (typeof value === "string") return value.replace(/(?<=^|[\s(„"])([aiouwzAIOUWZ]) /g, "$1\u00a0") as T
+  if (Array.isArray(value)) return value.map(keepOneLetterWords) as T
+  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, keepOneLetterWords(item)])) as T
+  return value
+}
+
+export const strings: Record<Locale, Strings> = { en, pl: keepOneLetterWords(pl), de, es, fr, it, pt }
 
 export const t = (locale: Locale) => strings[locale]
 

@@ -418,16 +418,16 @@ const jsonLd = {
       const opener = document.querySelector<HTMLButtonElement>("[data-menu-open]")
       if (menu && shade && opener) {
         const behind = [...document.querySelectorAll<HTMLElement>("body > div > header, body > div > main")]
-        // Safari paints the status bar with theme-color, above the page where
-        // the shade cannot reach: dim it the same way while the menu is open
-        // (the page's colour under 30 % black), and put it back after.
+        // Safari paints the status bar above the page, where the shade
+        // cannot reach, from theme-color or else the page's background. While
+        // the menu is open: no theme-color metas, and <html> and <body> in the
+        // page's colour under 30 % black; all put back after.
         const themeColors = [...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')]
         const shadeBar = (on: boolean) => {
           const page = getComputedStyle(shade.parentElement!).backgroundColor.match(/\d+(\.\d+)?/g)?.slice(0, 3).map(Number)
-          themeColors.forEach((meta) => {
-            meta.dataset.color ??= meta.content
-            meta.content = on && page ? `rgb(${page.map((value) => Math.round(value * 0.7)).join(", ")})` : meta.dataset.color
-          })
+          const dimmed = page ? `rgb(${page.map((value) => Math.round(value * 0.7)).join(", ")})` : ""
+          for (const element of [document.documentElement, document.body]) element.style.backgroundColor = on ? dimmed : ""
+          themeColors.forEach((meta) => (on ? meta.remove() : document.head.append(meta)))
         }
         const openMenu = () => {
           menu.style.top = `${scrollY}px`

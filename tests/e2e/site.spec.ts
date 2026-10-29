@@ -144,17 +144,18 @@ test("the navbar links the page's sections; on a phone they are in a menu that c
   await expect(panel).toHaveCSS("translate", "none")
   expect((await shade.boundingBox())!.height).toBeGreaterThanOrEqual(await page.evaluate(() => document.documentElement.scrollHeight) - 1)
   await expect(page.locator("html")).toHaveCSS("overflow", "hidden")
-  // Safari's status bar (theme-color) is dimmed with it: the light page
-  // (251, 250, 248) under 30 % black.
-  const themeColors = () => page.locator('meta[name="theme-color"]').evaluateAll((metas) => metas.map((meta) => (meta as HTMLMetaElement).content))
-  expect(await themeColors()).toContain("rgb(176, 175, 174)")
+  // Safari's status bar is dimmed with it: no theme-color, and the page's
+  // background the light page (251, 250, 248) under 30 % black.
+  await expect(page.locator('meta[name="theme-color"]')).toHaveCount(0)
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(176, 175, 174)")
   await faqLink.click()
   await expect(page.locator("#faq")).toBeInViewport()
   expect(new URL(page.url()).hash).toBe("")
   await expect(faqLink).toBeHidden()
   await expect(shade).not.toHaveAttribute("data-open")
   await expect(page.locator("html")).not.toHaveCSS("overflow", "hidden")
-  expect(await themeColors()).not.toContain("rgb(176, 175, 174)")
+  await expect(page.locator('meta[name="theme-color"]')).toHaveCount(4)
+  await expect(page.locator("body")).not.toHaveCSS("background-color", "rgb(176, 175, 174)")
 
   // Escape and a tap beside the sheet close it too.
   await page.getByRole("button", { name: strings.pl.nav.menu }).click()

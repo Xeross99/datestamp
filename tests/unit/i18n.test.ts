@@ -51,6 +51,14 @@ describe("translations", () => {
     expect(new Set(formats).size).toBe(formats.length)
   })
 
+  it("never leaves a Polish one-letter word at the end of a line", () => {
+    const texts = (value: unknown): string[] =>
+      typeof value === "string" ? [value] : value && typeof value === "object" ? Object.values(value).flatMap(texts) : []
+    const all = texts(strings.pl)
+    expect(all.join(" ")).toContain("stronę i\u00a0jak")
+    for (const text of all) expect(text, text).not.toMatch(/(?<=^|[\s(„"])[aiouwzAIOUWZ] /)
+  })
+
   it.each(locales)("%s keeps the {name} and {email} placeholders", (locale) => {
     expect(strings[locale].editor.cannotOpen).toContain("{name}")
     expect(strings[locale].privacy.contact).toContain("{email}")
