@@ -1,12 +1,12 @@
 // Reading a photo the user picked: its date (EXIF first, the file's
 // modification time as a fallback) and a decoded image.
 
-import exifr from "exifr"
-
 export type DateSource = "exif" | "file"
 
 export async function photoDate(file: File): Promise<{ date: Date; source: DateSource }> {
   try {
+    // Loaded with the first photo, not with the page (it is a third of the editor's code).
+    const { default: exifr } = await import("exifr")
     const tags = await exifr.parse(file, ["DateTimeOriginal", "CreateDate"])
     const date = tags?.DateTimeOriginal ?? tags?.CreateDate
     if (date instanceof Date && !Number.isNaN(date.getTime())) return { date, source: "exif" }

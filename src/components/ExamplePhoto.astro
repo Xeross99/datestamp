@@ -1,8 +1,12 @@
 ---
 // One example in "how it looks": a sample photo (src/lib/samples.ts) with a
-// date in one style on it.
-import { href } from "../i18n"
+// date in one style on it. The photo is resized at build time (400 and 800
+// px wide, AVIF and WebP), so a phone downloads only what it shows.
+import { Picture } from "astro:assets"
+import type { ImageMetadata } from "astro"
 import type { StampStyle } from "../lib/stamp"
+
+const photos = import.meta.glob<{ default: ImageMetadata }>("../assets/samples/*.webp", { eager: true })
 
 interface Props {
   sample: string
@@ -16,12 +20,15 @@ const { sample, alt, style, date, corner } = Astro.props
 ---
 
 <div class="relative aspect-4/3 overflow-hidden rounded-lg bg-photo">
-  <img
+  <Picture
     class="size-full object-cover"
-    src={href(`/samples/${sample}.webp`)}
+    pictureAttributes={{ class: "contents" }}
+    src={photos[`../assets/samples/${sample}.webp`].default}
     alt={alt}
-    width="800"
-    height="600"
+    widths={[400, 800]}
+    sizes="(min-width: 640px) 304px, calc(100vw - 32px)"
+    formats={["avif", "webp"]}
+    fallbackFormat="webp"
     loading="lazy"
     decoding="async"
   />

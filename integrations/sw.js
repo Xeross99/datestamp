@@ -6,7 +6,7 @@
 const VERSION = "__VERSION__"
 const BASE = "__BASE__"
 const LOCALES = __LOCALES__
-// The editor's scripts and styles, the icons, the sample photos and every
+// The editor's scripts, the icons and every
 // language's home page: enough to open and use the editor offline.
 const PRECACHE = __PRECACHE__
 const CACHE = `datestamp-${VERSION}`

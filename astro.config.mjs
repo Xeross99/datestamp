@@ -11,6 +11,9 @@ export default defineConfig({
   site: process.env.SITE ?? "http://localhost:4321",
   base: process.env.BASE_PATH ?? "/",
   trailingSlash: "always",
+  // The CSS (about 10 KB gzipped) inside each page instead of a file that
+  // blocks the first paint until it has arrived.
+  build: { inlineStylesheets: "always" },
   vite: {
     plugins: [tailwindcss()],
     // Pre-bundled up front: JSZip is imported lazily (on the first ZIP), and

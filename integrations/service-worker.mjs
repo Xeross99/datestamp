@@ -22,7 +22,10 @@ export default function serviceWorker({ locales, defaultLocale }) {
         const icons = ["favicon.svg", "favicon-32.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "manifest.webmanifest"]
         // Every language's home page holds the editor: "" is the default one.
         const homes = locales.map((locale) => (locale === defaultLocale ? "" : `${locale}/`))
-        const precache = [...homes, ...(await files("_astro")), ...(await files("samples")), ...icons]
+        // The scripts from _astro; the sample photos there (several sizes and
+        // formats) are kept as the browser shows them, not all up front.
+        const scripts = (await files("_astro")).filter((file) => /\.(js|css)$/.test(file))
+        const precache = [...homes, ...scripts, ...icons]
 
         const hash = createHash("sha256")
         for (const file of precache) hash.update(await readFile(path.join(out, file.endsWith("/") || file === "" ? `${file}index.html` : file)))

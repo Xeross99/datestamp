@@ -1,5 +1,5 @@
-// The photos of the "how it looks" examples (public/samples/<key>.webp,
-// 800×600), one per example, by Kamil Krzysteczko on Unsplash, under the
+// The photos of the "how it looks" examples (src/assets/samples/<key>.webp,
+// 800×600, resized at build time by ExamplePhoto.astro), one per example, by Kamil Krzysteczko on Unsplash, under the
 // Unsplash License (free, commercial use allowed, credit not required but
 // given under the examples). Each is lazy-loaded.
 

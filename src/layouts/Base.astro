@@ -206,12 +206,16 @@ const jsonLd = {
     }
     {
       adsense.client && (
-        <script
-          is:inline
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsense.client}`}
-          crossorigin="anonymous"
-        />
+        // AdSense's script once the page has loaded and the browser is idle,
+        // not with the page: it is the heaviest thing on it, and the rails
+        // and the inline unit are filled when it arrives.
+        <script is:inline define:vars={{ src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsense.client}` }}>
+          addEventListener("load", () => {
+            const add = () => document.head.append(Object.assign(document.createElement("script"), { src, async: true, crossOrigin: "anonymous" }))
+            if ("requestIdleCallback" in window) requestIdleCallback(add, { timeout: 3000 })
+            else setTimeout(add, 1000)
+          })
+        </script>
       )
     }
   </head>
@@ -406,7 +410,6 @@ const jsonLd = {
     {askConsent && <ConsentBanner locale={locale} />}
 
     <script>
-      import "@tailwindplus/elements"
       import { RAILS_MIN_WIDTH, fillAds } from "../lib/ads"
 
       // The mobile menu (see its markup): opens at the scroll position with
@@ -426,7 +429,15 @@ const jsonLd = {
         const shadeBar = (on: boolean) => {
           const page = getComputedStyle(shade.parentElement!).backgroundColor.match(/\d+(\.\d+)?/g)?.slice(0, 3).map(Number)
           const dimmed = page ? `rgb(${page.map((value) => Math.round(value * 0.7)).join(", ")})` : ""
-          for (const element of [document.documentElement, document.body]) element.style.backgroundColor = on ? dimmed : ""
+          // Faded like the shade (300 ms), so the bar and the page dim together.
+          const fade = matchMedia("(prefers-reduced-motion: reduce)").matches ? "" : "background-color 300ms ease-out"
+          for (const element of [document.documentElement, document.body]) {
+            element.style.transition = fade
+            element.style.backgroundColor = on ? dimmed : ""
+          }
+          // Then off again: an inline transition on <html> would override the
+          // theme switch's own (.theme-transition in global.css).
+          setTimeout(() => [document.documentElement, document.body].forEach((element) => (element.style.transition = "")), 350)
           themeColors.forEach((meta) => (on ? meta.remove() : document.head.append(meta)))
         }
         const openMenu = () => {

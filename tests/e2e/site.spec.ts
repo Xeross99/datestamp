@@ -262,8 +262,12 @@ test("the examples show the three sample photos, credited", async ({ page, reque
   const images = page.locator('#examples ~ div img')
   await expect(images).toHaveCount(3)
   for (const [index, { key }] of samples.entries()) {
-    await expect(images.nth(index)).toHaveAttribute("src", new RegExp(`/samples/${key}\\.webp$`))
-    expect((await request.get(`/samples/${key}.webp`)).status(), key).toBe(200)
+    // Resized at build time: a phone picks the 400 px one, AVIF where it can.
+    const picture = page.locator("#examples ~ div picture").nth(index)
+    await expect(picture.locator('source[type="image/avif"]')).toHaveAttribute("srcset", /400w.*800w/)
+    await expect(images.nth(index)).toHaveAttribute("src", new RegExp(`/_astro/${key}\\.[\\w-]+\\.webp$`))
+    const src = await images.nth(index).getAttribute("src")
+    expect((await request.get(src!)).status(), key).toBe(200)
   }
   await expect(page.getByRole("link", { name: "Kamil Krzysteczko" })).toBeVisible()
 })

@@ -94,7 +94,7 @@ integrations/sw.js        the service worker (offline use) as a template; servic
     locales.ts            the locale list + default locale (imported by astro.config.mjs too)
     index.ts              strings map, t(), pages list, pathOf(), href()
     en.ts                 reference strings; every other <locale>.ts `satisfies typeof en`
-public/                   favicon.svg, manifest.webmanifest
+public/                   favicon.svg, manifest.webmanifest (the sample photos are in src/assets/samples)
 tests/unit, tests/e2e, tests/fixtures
 .github/workflows/ci.yml       tests on every push and PR
 .github/workflows/deploy.yml   GitHub Pages deploy, after CI passed on main
@@ -181,7 +181,7 @@ A **stacked layout** after Tailwind's Catalyst (owner's choice): a navbar on the
 
 ## Sample photos ("how it looks")
 
-- Three photos by **Kamil Krzysteczko** on Unsplash (`src/lib/samples.ts`), one per example, in the order of `samples`: snowy mountain (white date, its outline on the bright snow), grass (label), forest (retro, which reads best on its light, even background). `public/samples/<key>.webp`, 800×600, lazy-loaded; credited under the examples. The owner chose them and wants no picker: three examples, that's all.
+- Three photos by **Kamil Krzysteczko** on Unsplash (`src/lib/samples.ts`), one per example, in the order of `samples`: snowy mountain (white date, its outline on the bright snow), grass (label), forest (retro, which reads best on its light, even background). `src/assets/samples/<key>.webp`, 800×600, resized at build time by `ExamplePhoto.astro` (astro:assets `<Picture>`: 400 and 800 px, AVIF and WebP, WebP fallback), lazy-loaded; credited under the examples. The owner chose them and wants no picker: three examples, that's all.
 - Licence: the Unsplash License (free, commercial use allowed, no credit required). Replacing one: check it says "Free to use under the Unsplash License" (not Unsplash+), crop to 4:3, and update its alt text in `home.examples.alts` in every locale.
 
 ## Theme and language menu
@@ -251,7 +251,7 @@ AdSense policy points to respect when changing the layout: no ads on pages witho
 
 - Never commit or push unless the owner asks for it explicitly. Never force push.
 - No backend, no uploads, no analytics that send photos or their metadata anywhere. Anything that would break "photos never leave your device" needs the owner's decision first.
-- Keep the first page load light: the editor is the only real JavaScript. Load heavy libraries (JSZip, a future HEIC decoder) with dynamic `import()` at the moment they are needed.
+- Keep the first page load light: the editor is the only real JavaScript. Load heavy libraries (JSZip, exifr, a future HEIC decoder) with dynamic `import()` at the moment they are needed. Also for speed: the CSS is inlined into each page (`build.inlineStylesheets: "always"`), Tailwind Plus Elements is imported by the editor only, and AdSense's script is added after `load`, when the browser is idle (Base.astro). GitHub Pages sends `max-age=600` for every file and that cannot be changed there; repeat visits get the files from the service worker.
 - Use `<details>`/`<summary>` and plain HTML for show/hide where possible (the language menu, the FAQ) rather than JavaScript.
 - Every layout must work at 375 px with a 16 px gutter and no horizontal scroll.
 

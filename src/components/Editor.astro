@@ -167,6 +167,9 @@ const button = "inline-flex cursor-pointer items-center justify-center gap-2 rou
 </div>
 
 <script>
+  // Tailwind Plus Elements: only the editor uses it (the format's <el-select>),
+  // so only pages with the editor load it.
+  import "@tailwindplus/elements"
   import { mountEditor } from "../lib/editor"
 
   document.querySelectorAll<HTMLElement>("[data-editor]").forEach(mountEditor)
