@@ -10,6 +10,11 @@ export default {
     android: "datum-auf-foto-android",
     batch: "datum-auf-mehrere-fotos",
     retro: "datum-wie-alte-kamera",
+    windows: "datum-auf-foto-windows",
+    mac: "datum-auf-foto-mac",
+    screenshot: "datum-auf-screenshot",
+    scanned: "datum-auf-alte-fotos",
+    timestamp: "datum-und-uhrzeit-auf-foto",
     privacy: "datenschutz",
   },
   home: {
@@ -131,6 +136,101 @@ export default {
       tip: "Das Datum kommt aus dem Foto selbst – auch neue Handyfotos bekommen also das Jahr, in dem sie gemacht wurden, kein erfundenes.",
       cta: "Jetzt Datum hinzufügen",
       tools: ["Webbrowser"],
+    },
+    windows: {
+      title: "Datum auf Foto unter Windows – ohne Programm | DateStamp",
+      description:
+        "Die Fotos-App von Windows kann kein Datum aufs Bild schreiben. In Chrome oder Edge geht es mit wenigen Klicks – kostenlos, ohne Installation.",
+      h1: "Datum auf Fotos unter Windows hinzufügen",
+      intro:
+        "Die Fotos-App von Windows zeigt, wann ein Bild aufgenommen wurde, kann das Datum aber nicht aufs Bild selbst schreiben. DateStamp macht das in Chrome oder Edge, ohne Installation:",
+      steps: [
+        "Öffne diese Seite in Chrome oder Edge auf deinem PC.",
+        "Klicke auf „Fotos auswählen“ oder zieh Fotos direkt aus dem Explorer auf die Seite.",
+        "DateStamp liest das Aufnahmedatum jedes Fotos; du kannst es unter dem Foto ändern.",
+        "Wähle Stil, Format und Ecke.",
+        "Klicke auf „In Ordner speichern“ und wähle, wohin die Kopien mit Datum sollen – die Originale bleiben unverändert.",
+      ],
+      tipTitle: "Gut zu wissen",
+      tip: "iPhone-Fotos auf dem PC sind oft HEIC-Dateien. DateStamp öffnet auch sie und speichert ein JPEG.",
+      cta: "Jetzt Datum hinzufügen",
+      tools: ["Windows", "Chrome oder Edge"],
+    },
+    mac: {
+      title: "Datum auf Foto am Mac einfügen – kostenlos | DateStamp",
+      description:
+        "Die Fotos-App am Mac zeigt das Datum, schreibt es aber nicht aufs Bild. In Safari oder Chrome geht es mit wenigen Klicks – kostenlos, ohne Upload.",
+      h1: "Datum auf Fotos am Mac hinzufügen",
+      intro:
+        "Die Fotos-App am Mac kennt das Aufnahmedatum jedes Bildes, kann es aber nicht daraufschreiben. DateStamp kann das, in Safari oder Chrome:",
+      steps: [
+        "Öffne diese Seite in Safari oder Chrome auf deinem Mac.",
+        "Zieh Fotos aus der Fotos-App oder dem Finder auf die Seite oder klicke auf „Fotos auswählen“.",
+        "DateStamp liest das Aufnahmedatum jedes Fotos; du kannst es unter dem Foto ändern.",
+        "Wähle Stil, Format und Ecke – das Retro-Datum sieht aus wie von einer Kamera aus den 90ern.",
+        "Speichern: in Chrome in einen Ordner deiner Wahl, in Safari in den Ordner „Downloads“.",
+      ],
+      tipTitle: "Gut zu wissen",
+      tip: "HEIC-Fotos vom iPhone öffnen sich ohne Umwandlung. DateStamp speichert eine JPEG-Kopie, das Original bleibt unverändert.",
+      cta: "Jetzt Datum hinzufügen",
+      tools: ["Mac", "Safari oder Chrome"],
+    },
+    screenshot: {
+      title: "Datum auf Screenshot einfügen – kostenlos | DateStamp",
+      description:
+        "Screenshots haben kein Kameradatum. DateStamp schreibt Datum und Uhrzeit ihrer Aufnahme darauf – im Browser, kostenlos, ohne Upload.",
+      h1: "Datum auf einen Screenshot setzen",
+      intro:
+        "Ein Screenshot hat keine Kameradaten, also auch kein Datum, das man zeigen könnte – aber dein Handy oder Computer weiß, wann er entstanden ist. DateStamp schreibt dieses Datum aufs Bild:",
+      steps: [
+        "Öffne DateStamp auf dem Gerät mit dem Screenshot oder am Computer.",
+        "Wähle die Screenshots aus oder zieh sie auf die Seite.",
+        "Ohne Kameradaten nimmt DateStamp das Speicherdatum der Datei und zeigt das unter jedem Bild an. Korrigiere es, wenn es nicht stimmt.",
+        "Wähle Stil und Ecke – das Etikett ist auf jedem Hintergrund lesbar.",
+        "Speichern – jeder Screenshot kommt als JPEG mit dem Datum in der Ecke zurück.",
+      ],
+      tipTitle: "Gut zu wissen",
+      tip: "Ein zugeschickter oder zwischen Geräten kopierter Screenshot trägt oft das Empfangsdatum statt des Aufnahmedatums. Prüfe das Datum unter jedem Bild vor dem Speichern.",
+      cta: "Jetzt Datum hinzufügen",
+      tools: ["Computer oder Handy", "Webbrowser"],
+    },
+    scanned: {
+      title: "Datum auf alte und eingescannte Fotos | DateStamp",
+      description:
+        "Scans und alte Abzüge haben kein Datum in der Datei. Gib das Aufnahmejahr ein und setz es aufs Bild wie eine Filmkamera – kostenlos, im Browser.",
+      h1: "Datum auf alte und eingescannte Fotos setzen",
+      intro:
+        "Ein Scan kennt nur den Tag, an dem er gescannt wurde, nicht den Sommer, in dem das Foto entstand. Mit DateStamp gibst du das echte Datum ein und setzt es im Stil der Kamera von damals aufs Bild:",
+      steps: [
+        "Scanne die Fotos oder fotografiere die Abzüge mit dem Handy ab.",
+        "Öffne DateStamp und wähle die Scans aus.",
+        "Öffne das Datum unter jedem Foto und gib den Aufnahmetag ein. Kennst du nur das Jahr, wähle einfach einen Tag darin.",
+        "Wähle den Retro-Stil – das orange Datum der Filmkameras aus den 90ern passt am besten zu alten Bildern.",
+        "Speichere die Kopien mit Datum – die Scans bleiben unverändert.",
+      ],
+      tipTitle: "Gut zu wissen",
+      tip: "Ein unter dem Foto geändertes Datum landet auch in den EXIF-Daten der gespeicherten Datei, sodass Foto-Apps den Scan nach seinem Aufnahmejahr sortieren.",
+      cta: "Jetzt Datum hinzufügen",
+      tools: ["Computer oder Handy", "Webbrowser"],
+    },
+    timestamp: {
+      title: "Datum und Uhrzeit auf Foto – Zeitstempel | DateStamp",
+      description:
+        "Setz Datum und Uhrzeit der Aufnahme aufs Foto – für Baudokumentation, Schadensmeldungen oder Übergaben. Kostenlos, im Browser, ohne Upload.",
+      h1: "Datum und Uhrzeit auf ein Foto setzen",
+      intro:
+        "Für eine Baudokumentation, eine Schadensmeldung oder eine Übergabe sollte das Foto zeigen, wann es entstanden ist. DateStamp schreibt Datum und Uhrzeit aus den Daten des Fotos selbst darauf:",
+      steps: [
+        "Öffne DateStamp am Handy oder Computer und wähle die Fotos aus.",
+        "DateStamp liest Datum und Uhrzeit jeder Aufnahme aus den Kameradaten.",
+        "Wähle unter „Format“ die Variante mit Uhrzeit, etwa 14.07.2026 18:30.",
+        "Wähle einen Stil, der auf dem Foto gut lesbar ist – das Etikett passt auf jeden Hintergrund.",
+        "Speichern – jedes Foto kommt in voller Auflösung als JPEG mit Datum und Uhrzeit in der Ecke zurück.",
+      ],
+      tipTitle: "Gut zu wissen",
+      tip: "Die Uhrzeit stammt von der Uhr der Kamera. Ein aufgedrucktes Datum lässt sich wie jede Bearbeitung ändern und beweist den Zeitpunkt allein nicht – bewahre auch die Originale auf.",
+      cta: "Jetzt Datum hinzufügen",
+      tools: ["Computer oder Handy", "Webbrowser"],
     },
   },
   privacy: {

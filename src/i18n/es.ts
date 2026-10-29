@@ -10,6 +10,11 @@ export default {
     android: "como-poner-fecha-a-una-foto-en-android",
     batch: "poner-fecha-a-varias-fotos",
     retro: "fecha-como-camara-antigua",
+    windows: "poner-fecha-a-una-foto-en-windows",
+    mac: "poner-fecha-a-una-foto-en-mac",
+    screenshot: "poner-fecha-a-una-captura-de-pantalla",
+    scanned: "poner-fecha-a-fotos-antiguas",
+    timestamp: "poner-fecha-y-hora-a-una-foto",
     privacy: "politica-de-privacidad",
   },
   home: {
@@ -131,6 +136,101 @@ export default {
       tip: "La fecha sale de la propia foto, así que incluso las fotos nuevas del móvil llevan el año en que se hicieron, no uno inventado.",
       cta: "Poner la fecha ahora",
       tools: ["Navegador web"],
+    },
+    windows: {
+      title: "Cómo poner fecha a una foto en Windows | DateStamp",
+      description:
+        "La app Fotos de Windows no escribe la fecha en la imagen. Hazlo en Chrome o Edge en pocos clics: gratis, sin instalar nada y sin subir fotos.",
+      h1: "Cómo poner la fecha a una foto en Windows",
+      intro:
+        "La app Fotos de Windows muestra cuándo se hizo una foto, pero no puede escribir la fecha en la propia imagen. DateStamp lo hace en Chrome o Edge, sin instalar nada:",
+      steps: [
+        "Abre esta página en Chrome o Edge en tu PC.",
+        "Pulsa «Elegir fotos» o arrastra las fotos directamente desde el Explorador de archivos.",
+        "DateStamp lee la fecha en que se hizo cada foto; puedes cambiarla debajo de la foto.",
+        "Elige el estilo, el formato y la esquina.",
+        "Pulsa «Guardar en una carpeta» y elige dónde van las copias con fecha: los originales no se tocan.",
+      ],
+      tipTitle: "Conviene saber",
+      tip: "Las fotos del iPhone copiadas al PC suelen ser archivos HEIC. DateStamp también las abre y guarda un JPEG.",
+      cta: "Poner la fecha ahora",
+      tools: ["Windows", "Chrome o Edge"],
+    },
+    mac: {
+      title: "Cómo poner fecha a una foto en Mac | DateStamp",
+      description:
+        "La app Fotos del Mac muestra la fecha, pero no la escribe en la imagen. Hazlo en Safari o Chrome en pocos clics: gratis y sin subir nada.",
+      h1: "Cómo poner la fecha a una foto en Mac",
+      intro:
+        "Fotos en el Mac sabe cuándo se hizo cada imagen, pero no puede escribir la fecha en ella. DateStamp sí, en Safari o Chrome:",
+      steps: [
+        "Abre esta página en Safari o Chrome en tu Mac.",
+        "Arrastra fotos desde Fotos o el Finder a la página, o pulsa «Elegir fotos».",
+        "DateStamp lee la fecha en que se hizo cada foto; puedes cambiarla debajo de la foto.",
+        "Elige el estilo, el formato y la esquina: la fecha retro parece de una cámara de los 90.",
+        "Guarda: en Chrome en la carpeta que elijas, en Safari en la carpeta Descargas.",
+      ],
+      tipTitle: "Conviene saber",
+      tip: "Las fotos HEIC del iPhone se abren sin convertirlas. DateStamp guarda una copia en JPEG y el original no cambia.",
+      cta: "Poner la fecha ahora",
+      tools: ["Mac", "Safari o Chrome"],
+    },
+    screenshot: {
+      title: "Poner fecha a una captura de pantalla, gratis | DateStamp",
+      description:
+        "Las capturas no tienen fecha de cámara. DateStamp les pone la fecha y la hora en que se hicieron, en el navegador, gratis y sin subir nada.",
+      h1: "Cómo poner la fecha a una captura de pantalla",
+      intro:
+        "Una captura de pantalla no tiene datos de cámara, así que no trae una fecha que mostrar, pero tu móvil o tu ordenador saben cuándo se hizo. DateStamp escribe esa fecha en la imagen:",
+      steps: [
+        "Abre DateStamp en el dispositivo donde está la captura o en un ordenador.",
+        "Elige las capturas o arrástralas a la página.",
+        "Sin datos de cámara, DateStamp usa la fecha en que se guardó el archivo y lo indica debajo de cada una. Cámbiala si no es correcta.",
+        "Elige el estilo y la esquina: la etiqueta se lee bien sobre cualquier fondo.",
+        "Guarda: cada captura vuelve como JPEG con la fecha en la esquina.",
+      ],
+      tipTitle: "Conviene saber",
+      tip: "Una captura que te enviaron o que se copió entre dispositivos puede llevar la fecha en que llegó en vez de la fecha en que se hizo. Revisa la fecha de cada una antes de guardar.",
+      cta: "Poner la fecha ahora",
+      tools: ["Ordenador o móvil", "Navegador web"],
+    },
+    scanned: {
+      title: "Poner fecha a fotos antiguas o escaneadas | DateStamp",
+      description:
+        "Los escaneos y las copias antiguas no llevan fecha en el archivo. Escribe el año en que se hizo la foto y ponlo como una cámara de carrete, gratis.",
+      h1: "Cómo poner la fecha a fotos antiguas y escaneadas",
+      intro:
+        "Un escaneo solo conoce el día en que se escaneó, no el verano en que se hizo la foto. Con DateStamp escribes la fecha real y la pones en la imagen con el estilo de la cámara de entonces:",
+      steps: [
+        "Escanea las fotos o fotografía las copias con el móvil.",
+        "Abre DateStamp y elige los escaneos.",
+        "Abre la fecha debajo de cada foto y escribe el día en que se hizo. Si solo sabes el año, elige cualquier día de ese año.",
+        "Elige el estilo retro: la fecha naranja de las cámaras de carrete de los 90 es la que mejor queda en fotos antiguas.",
+        "Guarda las copias con fecha: los escaneos no cambian.",
+      ],
+      tipTitle: "Conviene saber",
+      tip: "La fecha que cambias debajo de una foto también se guarda en los datos EXIF del archivo, así que las apps de fotos ordenan el escaneo por el año en que se hizo la foto.",
+      cta: "Poner la fecha ahora",
+      tools: ["Ordenador o móvil", "Navegador web"],
+    },
+    timestamp: {
+      title: "Poner fecha y hora a una foto (marca de tiempo) | DateStamp",
+      description:
+        "Pon en la foto la fecha y la hora en que se hizo: para informes de obra, reclamaciones o entregas. Gratis, en el navegador y sin subir nada.",
+      h1: "Cómo poner la fecha y la hora a una foto",
+      intro:
+        "Para un informe de obra, una reclamación o una entrega, la foto debe mostrar cuándo se hizo. DateStamp escribe la fecha y la hora a partir de los datos de la propia foto:",
+      steps: [
+        "Abre DateStamp en el móvil o en el ordenador y elige las fotos.",
+        "DateStamp lee la fecha y la hora de cada foto de los datos de la cámara.",
+        "En «Formato», elige la opción con hora, por ejemplo 14/07/2026 18:30.",
+        "Elige un estilo que se lea bien en la foto: la etiqueta funciona sobre cualquier fondo.",
+        "Guarda: cada foto vuelve como JPEG a tamaño completo con la fecha y la hora en la esquina.",
+      ],
+      tipTitle: "Conviene saber",
+      tip: "La hora es la que registró el reloj de la cámara. Una fecha impresa se puede cambiar como cualquier edición, así que por sí sola no prueba la hora: guarda también los originales.",
+      cta: "Poner la fecha ahora",
+      tools: ["Ordenador o móvil", "Navegador web"],
     },
   },
   privacy: {

@@ -13,6 +13,11 @@ export default {
     android: "how-to-add-date-to-photo-on-android",
     batch: "add-date-to-multiple-photos",
     retro: "old-camera-date-stamp-effect",
+    windows: "add-date-to-photo-on-windows",
+    mac: "add-date-to-photo-on-mac",
+    screenshot: "add-date-to-screenshot",
+    scanned: "add-date-to-old-scanned-photos",
+    timestamp: "add-date-and-time-to-photo",
     privacy: "privacy-policy",
   },
   home: {
@@ -134,6 +139,101 @@ export default {
       tip: "The date comes from the photo itself, so even new phone photos get the year they were taken – not a made-up one.",
       cta: "Add the date now",
       tools: ["A web browser"],
+    },
+    windows: {
+      title: "How to Add the Date to Photos on Windows | DateStamp",
+      description:
+        "Windows Photos can't print the date on a picture. Add it in Chrome or Edge in a few clicks – free, no program to install, nothing uploaded.",
+      h1: "How to add the date to photos on Windows",
+      intro:
+        "The Photos app in Windows shows when a picture was taken, but it can't put the date on the picture itself. DateStamp does it in Chrome or Edge, with nothing to install:",
+      steps: [
+        "Open this page in Chrome or Edge on your PC.",
+        "Click “Choose photos”, or drag photos straight from File Explorer onto the page.",
+        "DateStamp reads the date each photo was taken; change it under any photo.",
+        "Pick a style, a format and a corner.",
+        "Click “Save to a folder” and choose where the dated copies go – your originals stay untouched.",
+      ],
+      tipTitle: "Good to know",
+      tip: "iPhone photos copied to a PC are often HEIC files. DateStamp opens those too and saves a JPEG.",
+      cta: "Add the date now",
+      tools: ["Windows", "Chrome or Edge"],
+    },
+    mac: {
+      title: "How to Add the Date to Photos on a Mac | DateStamp",
+      description:
+        "The Mac's Photos app shows the date but won't print it on a picture. Add it in Safari or Chrome in a few clicks – free, with nothing uploaded.",
+      h1: "How to add the date to photos on a Mac",
+      intro:
+        "Photos on a Mac knows when every picture was taken, but it has no way to print the date on it. DateStamp does, in Safari or Chrome:",
+      steps: [
+        "Open this page in Safari or Chrome on your Mac.",
+        "Drag photos from Photos or Finder onto the page, or click “Choose photos”.",
+        "DateStamp reads the date each photo was taken; change it under any photo.",
+        "Pick a style, a format and a corner – the retro date looks like a 90s film camera.",
+        "Save: in Chrome into a folder you pick, in Safari to your Downloads folder.",
+      ],
+      tipTitle: "Good to know",
+      tip: "HEIC photos from your iPhone open as they are. DateStamp saves a JPEG copy and the original stays as it was.",
+      cta: "Add the date now",
+      tools: ["Mac", "Safari or Chrome"],
+    },
+    screenshot: {
+      title: "Add the Date to a Screenshot – Free, Online | DateStamp",
+      description:
+        "Screenshots carry no camera date. DateStamp prints the date and time they were taken on them, in your browser – free, nothing is uploaded.",
+      h1: "How to add the date to a screenshot",
+      intro:
+        "A screenshot has no camera data, so there is no date in it to show – but your phone or computer still knows when it was taken. DateStamp prints that date on the picture:",
+      steps: [
+        "Open DateStamp on the device with the screenshot, or on a computer.",
+        "Choose the screenshots, or drag them onto the page.",
+        "Without camera data, DateStamp takes the date the file was saved, and says so under each one. Change it if it is off.",
+        "Pick the style and the corner – a label reads well on any background.",
+        "Save – each screenshot comes back as a JPEG with the date in the corner.",
+      ],
+      tipTitle: "Good to know",
+      tip: "A screenshot sent to you, or copied between devices, may carry the date it arrived rather than the date it was taken. Check the date under each one before saving.",
+      cta: "Add the date now",
+      tools: ["A computer or a phone", "A web browser"],
+    },
+    scanned: {
+      title: "Add the Date to Old or Scanned Photos | DateStamp",
+      description:
+        "Scans and old prints have no date inside. Type the year they were taken and print it on them, like a film camera would – free, in the browser.",
+      h1: "How to add the date to old and scanned photos",
+      intro:
+        "A scan knows only the day it was scanned, not the summer the photo was taken. With DateStamp you type in the real date and print it on the picture, in the style of the camera it came from:",
+      steps: [
+        "Scan the photos, or photograph the prints with your phone.",
+        "Open DateStamp and choose the scans.",
+        "Open the date under each photo and type the day it was taken. If you know only the year, pick any day in it.",
+        "Pick the retro style – the orange date of 90s film cameras suits old pictures best.",
+        "Save the dated copies – the scans stay as they were.",
+      ],
+      tipTitle: "Good to know",
+      tip: "A date you change under a photo is also written into the saved file's EXIF, so photo apps sort the scan by the year it was taken.",
+      cta: "Add the date now",
+      tools: ["A computer or a phone", "A web browser"],
+    },
+    timestamp: {
+      title: "Add Date and Time to a Photo (Timestamp) | DateStamp",
+      description:
+        "Put the date and time a photo was taken on the picture – for site reports, damage claims or deliveries. Free, in the browser, nothing uploaded.",
+      h1: "How to add the date and time to a photo",
+      intro:
+        "For a site report, a damage claim or a delivery, the photo should show when it was taken. DateStamp prints the date and the time from the photo's own data:",
+      steps: [
+        "Open DateStamp on your phone or computer and choose the photos.",
+        "DateStamp reads the date and time each was taken from the camera's data.",
+        "In “Format”, pick the one with the time, such as 14/07/2026 18:30.",
+        "Pick a style that reads well on the photo – the label works on any background.",
+        "Save – each photo comes back as a full-size JPEG with the date and time in the corner.",
+      ],
+      tipTitle: "Good to know",
+      tip: "The time is the one your camera's clock recorded. A printed date can be changed like any edit, so on its own it does not prove the time – keep the originals too.",
+      cta: "Add the date now",
+      tools: ["A computer or a phone", "A web browser"],
     },
   },
   privacy: {

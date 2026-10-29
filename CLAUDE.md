@@ -200,7 +200,7 @@ Locales: **en (default, no prefix), pl, de, es, fr, it, pt**, each under `/<loca
 
 - **All user-facing text lives in `src/i18n/<locale>.ts`.** Never hardcode copy in components. Polish strings get a non-breaking space after every one-letter word (a, i, o, u, w, z) in `src/i18n/index.ts` (`keepOneLetterWords`), so none ends a line; type plain spaces in pl.ts. `en.ts` is the reference shape; the others end with `satisfies typeof en`, so `npm run check` fails when a key is missing.
 - **Slugs are translated** (`slugs` in each locale file), because the slug is a ranking signal in the searcher's language: `/de/datum-auf-foto-iphone/`, `/pl/jak-dodac-date-do-zdjecia-na-iphonie/`.
-- Pages: `home`, the guides (`guidePages`: `iphone`, `android`, `batch` = many photos at once, `retro` = the old-camera date effect), `privacy`. 6 pages × 7 locales = 42.
+- Pages: `home`, the guides (`guidePages`: `iphone`, `android`, `windows`, `mac`, `batch` = many photos at once, `screenshot`, `timestamp` = date and time for reports and claims, `scanned` = old and scanned photos with the date typed in, `retro` = the old-camera date effect), `privacy`. 11 pages × 7 locales = 77.
 - `pathOf(page, locale)` gives a page's path and `href(path)` adds the base path (GitHub Pages serves under `/<repo>/`). **Always build internal links and asset URLs with `href()`**, never a bare `/…`, or they break on GitHub Pages.
 - Every page outputs a canonical URL, `hreflang` alternates for every locale plus `x-default` (English), and JSON-LD: `WebApplication` on every page, `FAQPage` on home, `HowTo` on guides.
 - The sitemap's i18n option pairs pages only when their paths match after the locale prefix, so it links the home pages but not the translated-slug guides. The `hreflang` tags in `<head>` cover those; that is enough for Google.
@@ -258,5 +258,4 @@ AdSense policy points to respect when changing the layout: no ads on pages witho
 ## Known gaps / next steps
 
 - **Retro font**: currently Courier New with a glow. A seven-segment font such as DSEG7 (OFL licence) bundled in `public/` would look closer to the real thing.
-- More SEO pages: Android, "add date to multiple photos", "old camera date effect", "add date to screenshot".
 - GitHub's terms say Pages is not meant for running an online business. A free tool with ads is a grey area; if that becomes a problem, or a paid tier comes, move the static `dist/` to Cloudflare Pages (free, commercial use allowed, custom headers and redirects). With your own domain, the move keeps every URL and ranking.

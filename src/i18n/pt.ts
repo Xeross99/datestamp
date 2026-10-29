@@ -10,6 +10,11 @@ export default {
     android: "como-colocar-data-na-foto-no-android",
     batch: "colocar-data-em-varias-fotos",
     retro: "data-de-camera-antiga",
+    windows: "como-colocar-data-na-foto-no-windows",
+    mac: "como-colocar-data-na-foto-no-mac",
+    screenshot: "colocar-data-em-print-de-tela",
+    scanned: "colocar-data-em-fotos-antigas",
+    timestamp: "colocar-data-e-hora-na-foto",
     privacy: "politica-de-privacidade",
   },
   home: {
@@ -131,6 +136,101 @@ export default {
       tip: "A data vem da própria foto, então até fotos novas do celular ganham o ano em que foram tiradas, não um inventado.",
       cta: "Colocar a data agora",
       tools: ["Navegador"],
+    },
+    windows: {
+      title: "Como colocar data na foto no Windows | DateStamp",
+      description:
+        "O app Fotos do Windows não escreve a data na imagem. Faça isso no Chrome ou no Edge em poucos cliques: grátis, sem instalar nada nem enviar fotos.",
+      h1: "Como colocar a data na foto no Windows",
+      intro:
+        "O app Fotos do Windows mostra quando a foto foi tirada, mas não consegue escrever a data na própria imagem. O DateStamp faz isso no Chrome ou no Edge, sem instalar nada:",
+      steps: [
+        "Abra esta página no Chrome ou no Edge no seu PC.",
+        "Clique em “Escolher fotos” ou arraste as fotos direto do Explorador de Arquivos.",
+        "O DateStamp lê a data em que cada foto foi tirada; você pode mudá-la embaixo da foto.",
+        "Escolha o estilo, o formato e o canto.",
+        "Clique em “Salvar em uma pasta” e escolha para onde vão as cópias com data: os originais ficam intactos.",
+      ],
+      tipTitle: "Bom saber",
+      tip: "Fotos do iPhone copiadas para o PC costumam ser arquivos HEIC. O DateStamp abre esses arquivos também e salva um JPEG.",
+      cta: "Colocar a data agora",
+      tools: ["Windows", "Chrome ou Edge"],
+    },
+    mac: {
+      title: "Como colocar data na foto no Mac | DateStamp",
+      description:
+        "O app Fotos do Mac mostra a data, mas não a escreve na imagem. Faça isso no Safari ou no Chrome em poucos cliques: grátis e sem enviar nada.",
+      h1: "Como colocar a data na foto no Mac",
+      intro:
+        "O Fotos do Mac sabe quando cada imagem foi tirada, mas não consegue escrever a data nela. O DateStamp consegue, no Safari ou no Chrome:",
+      steps: [
+        "Abra esta página no Safari ou no Chrome no seu Mac.",
+        "Arraste fotos do Fotos ou do Finder para a página, ou clique em “Escolher fotos”.",
+        "O DateStamp lê a data em que cada foto foi tirada; você pode mudá-la embaixo da foto.",
+        "Escolha o estilo, o formato e o canto: a data retrô parece de uma câmera dos anos 90.",
+        "Salve: no Chrome na pasta que você escolher, no Safari na pasta Downloads.",
+      ],
+      tipTitle: "Bom saber",
+      tip: "Fotos HEIC do iPhone abrem sem conversão. O DateStamp salva uma cópia em JPEG e o original continua como estava.",
+      cta: "Colocar a data agora",
+      tools: ["Mac", "Safari ou Chrome"],
+    },
+    screenshot: {
+      title: "Colocar data em print de tela – grátis | DateStamp",
+      description:
+        "Prints de tela não têm data da câmera. O DateStamp coloca neles a data e a hora em que foram feitos, no navegador, grátis e sem enviar nada.",
+      h1: "Como colocar a data em um print de tela",
+      intro:
+        "Um print de tela não tem dados de câmera, então não há uma data para mostrar, mas o seu celular ou computador sabe quando ele foi feito. O DateStamp escreve essa data na imagem:",
+      steps: [
+        "Abra o DateStamp no aparelho onde está o print, ou em um computador.",
+        "Escolha os prints ou arraste-os para a página.",
+        "Sem dados de câmera, o DateStamp usa a data em que o arquivo foi salvo e avisa embaixo de cada um. Corrija se estiver errada.",
+        "Escolha o estilo e o canto: a etiqueta fica legível em qualquer fundo.",
+        "Salve: cada print volta como JPEG com a data no canto.",
+      ],
+      tipTitle: "Bom saber",
+      tip: "Um print que alguém enviou ou que foi copiado entre aparelhos pode ter a data em que chegou, e não a de quando foi feito. Confira a data embaixo de cada um antes de salvar.",
+      cta: "Colocar a data agora",
+      tools: ["Computador ou celular", "Navegador"],
+    },
+    scanned: {
+      title: "Colocar data em fotos antigas ou escaneadas | DateStamp",
+      description:
+        "Fotos escaneadas e cópias antigas não têm data no arquivo. Digite o ano em que a foto foi tirada e coloque-o como uma câmera de filme, grátis.",
+      h1: "Como colocar a data em fotos antigas e escaneadas",
+      intro:
+        "Uma foto escaneada só conhece o dia em que foi escaneada, não o verão em que foi tirada. Com o DateStamp você digita a data verdadeira e a coloca na imagem no estilo da câmera da época:",
+      steps: [
+        "Escaneie as fotos ou fotografe as cópias com o celular.",
+        "Abra o DateStamp e escolha as fotos escaneadas.",
+        "Abra a data embaixo de cada foto e digite o dia em que ela foi tirada. Se souber só o ano, escolha qualquer dia daquele ano.",
+        "Escolha o estilo retrô: a data laranja das câmeras de filme dos anos 90 é a que mais combina com fotos antigas.",
+        "Salve as cópias com data: as fotos escaneadas não mudam.",
+      ],
+      tipTitle: "Bom saber",
+      tip: "A data alterada embaixo de uma foto também vai para os dados EXIF do arquivo salvo, e os apps de fotos passam a ordenar a imagem pelo ano em que ela foi tirada.",
+      cta: "Colocar a data agora",
+      tools: ["Computador ou celular", "Navegador"],
+    },
+    timestamp: {
+      title: "Colocar data e hora na foto (carimbo de data) | DateStamp",
+      description:
+        "Coloque na foto a data e a hora em que ela foi tirada: para obras, sinistros ou entregas. Grátis, no navegador e sem enviar nada para ninguém.",
+      h1: "Como colocar data e hora na foto",
+      intro:
+        "Para registrar uma obra, um sinistro ou uma entrega, a foto precisa mostrar quando foi tirada. O DateStamp escreve a data e a hora a partir dos dados da própria foto:",
+      steps: [
+        "Abra o DateStamp no celular ou no computador e escolha as fotos.",
+        "O DateStamp lê a data e a hora de cada foto nos dados da câmera.",
+        "Em “Formato”, escolha a opção com hora, por exemplo 14/07/2026 18:30.",
+        "Escolha um estilo legível na foto: a etiqueta funciona em qualquer fundo.",
+        "Salve: cada foto volta como JPEG em tamanho original com a data e a hora no canto.",
+      ],
+      tipTitle: "Bom saber",
+      tip: "A hora é a do relógio da câmera. Uma data impressa pode ser alterada como qualquer edição, então sozinha ela não prova o horário: guarde também os originais.",
+      cta: "Colocar a data agora",
+      tools: ["Computador ou celular", "Navegador"],
     },
   },
   privacy: {

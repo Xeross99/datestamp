@@ -10,6 +10,11 @@ export default {
     android: "come-aggiungere-la-data-alle-foto-su-android",
     batch: "aggiungere-la-data-a-piu-foto",
     retro: "data-come-vecchia-macchina-fotografica",
+    windows: "aggiungere-la-data-alle-foto-su-windows",
+    mac: "aggiungere-la-data-alle-foto-su-mac",
+    screenshot: "aggiungere-la-data-a-uno-screenshot",
+    scanned: "aggiungere-la-data-a-vecchie-foto",
+    timestamp: "aggiungere-data-e-ora-a-una-foto",
     privacy: "informativa-sulla-privacy",
   },
   home: {
@@ -131,6 +136,101 @@ export default {
       tip: "La data viene dalla foto stessa, quindi anche le foto recenti del telefono hanno l'anno in cui sono state scattate, non uno inventato.",
       cta: "Aggiungi la data ora",
       tools: ["Browser web"],
+    },
+    windows: {
+      title: "Come aggiungere la data alle foto su Windows | DateStamp",
+      description:
+        "L'app Foto di Windows non scrive la data sull'immagine. Fallo in Chrome o Edge con pochi clic: gratis, senza installare nulla né caricare foto.",
+      h1: "Come aggiungere la data alle foto su Windows",
+      intro:
+        "L'app Foto di Windows mostra quando è stata scattata una foto, ma non può scrivere la data sull'immagine. DateStamp lo fa in Chrome o Edge, senza installare nulla:",
+      steps: [
+        "Apri questa pagina in Chrome o Edge sul tuo PC.",
+        "Fai clic su «Scegli foto» o trascina le foto direttamente da Esplora file.",
+        "DateStamp legge la data di scatto di ogni foto; puoi cambiarla sotto la foto.",
+        "Scegli lo stile, il formato e l'angolo.",
+        "Fai clic su «Salva in una cartella» e scegli dove mettere le copie con la data: gli originali restano intatti.",
+      ],
+      tipTitle: "Buono a sapersi",
+      tip: "Le foto dell'iPhone copiate sul PC sono spesso file HEIC. DateStamp apre anche quelli e salva un JPEG.",
+      cta: "Aggiungi la data ora",
+      tools: ["Windows", "Chrome o Edge"],
+    },
+    mac: {
+      title: "Come aggiungere la data alle foto su Mac | DateStamp",
+      description:
+        "L'app Foto del Mac mostra la data ma non la scrive sull'immagine. Fallo in Safari o Chrome con pochi clic: gratis e senza caricare nulla.",
+      h1: "Come aggiungere la data alle foto su Mac",
+      intro:
+        "Foto sul Mac conosce la data di ogni immagine, ma non può scriverla sopra. DateStamp sì, in Safari o Chrome:",
+      steps: [
+        "Apri questa pagina in Safari o Chrome sul tuo Mac.",
+        "Trascina le foto da Foto o dal Finder sulla pagina, oppure fai clic su «Scegli foto».",
+        "DateStamp legge la data di scatto di ogni foto; puoi cambiarla sotto la foto.",
+        "Scegli lo stile, il formato e l'angolo: la data retrò sembra quella di una fotocamera anni '90.",
+        "Salva: in Chrome nella cartella che scegli, in Safari nella cartella Download.",
+      ],
+      tipTitle: "Buono a sapersi",
+      tip: "Le foto HEIC dell'iPhone si aprono senza convertirle. DateStamp salva una copia in JPEG e l'originale resta com'è.",
+      cta: "Aggiungi la data ora",
+      tools: ["Mac", "Safari o Chrome"],
+    },
+    screenshot: {
+      title: "Aggiungere la data a uno screenshot, gratis | DateStamp",
+      description:
+        "Gli screenshot non hanno la data della fotocamera. DateStamp vi scrive la data e l'ora in cui sono stati fatti, nel browser, gratis e senza upload.",
+      h1: "Come aggiungere la data a uno screenshot",
+      intro:
+        "Uno screenshot non ha dati della fotocamera, quindi non c'è una data da mostrare, ma il telefono o il computer sanno quando è stato fatto. DateStamp scrive quella data sull'immagine:",
+      steps: [
+        "Apri DateStamp sul dispositivo dove si trova lo screenshot, oppure su un computer.",
+        "Scegli gli screenshot o trascinali sulla pagina.",
+        "Senza dati della fotocamera, DateStamp usa la data di salvataggio del file e lo indica sotto ciascuno. Correggila se non è giusta.",
+        "Scegli lo stile e l'angolo: l'etichetta si legge su qualsiasi sfondo.",
+        "Salva: ogni screenshot torna come JPEG con la data nell'angolo.",
+      ],
+      tipTitle: "Buono a sapersi",
+      tip: "Uno screenshot ricevuto o copiato tra dispositivi può avere la data di arrivo invece di quella di creazione. Controlla la data sotto ciascuno prima di salvare.",
+      cta: "Aggiungi la data ora",
+      tools: ["Computer o telefono", "Browser web"],
+    },
+    scanned: {
+      title: "Aggiungere la data a vecchie foto scansionate | DateStamp",
+      description:
+        "Le scansioni e le vecchie stampe non hanno una data nel file. Scrivi l'anno dello scatto e mettilo sulla foto come una fotocamera a pellicola.",
+      h1: "Come aggiungere la data a vecchie foto e scansioni",
+      intro:
+        "Una scansione conosce solo il giorno in cui è stata fatta, non l'estate in cui è stata scattata la foto. Con DateStamp scrivi la data vera e la metti sull'immagine nello stile della fotocamera di allora:",
+      steps: [
+        "Scansiona le foto, oppure fotografa le stampe con il telefono.",
+        "Apri DateStamp e scegli le scansioni.",
+        "Apri la data sotto ogni foto e scrivi il giorno dello scatto. Se conosci solo l'anno, scegli un giorno qualsiasi di quell'anno.",
+        "Scegli lo stile retrò: la data arancione delle fotocamere a pellicola anni '90 è la più adatta alle vecchie foto.",
+        "Salva le copie con la data: le scansioni restano invariate.",
+      ],
+      tipTitle: "Buono a sapersi",
+      tip: "La data cambiata sotto una foto finisce anche nei dati EXIF del file salvato, così le app di foto ordinano la scansione per l'anno dello scatto.",
+      cta: "Aggiungi la data ora",
+      tools: ["Computer o telefono", "Browser web"],
+    },
+    timestamp: {
+      title: "Aggiungere data e ora a una foto (timestamp) | DateStamp",
+      description:
+        "Metti sulla foto la data e l'ora dello scatto: per cantieri, sinistri o consegne. Gratis, nel browser, senza caricare nulla da nessuna parte.",
+      h1: "Come aggiungere data e ora a una foto",
+      intro:
+        "Per la documentazione di un cantiere, una denuncia di sinistro o una consegna, la foto deve mostrare quando è stata scattata. DateStamp scrive data e ora dai dati della foto stessa:",
+      steps: [
+        "Apri DateStamp sul telefono o sul computer e scegli le foto.",
+        "DateStamp legge data e ora di ogni scatto dai dati della fotocamera.",
+        "In «Formato» scegli quello con l'ora, per esempio 14/07/2026 18:30.",
+        "Scegli uno stile leggibile sulla foto: l'etichetta funziona su qualsiasi sfondo.",
+        "Salva: ogni foto torna come JPEG a piena risoluzione con data e ora nell'angolo.",
+      ],
+      tipTitle: "Buono a sapersi",
+      tip: "L'ora è quella dell'orologio della fotocamera. Una data stampata si può cambiare come ogni modifica, quindi da sola non prova l'ora: conserva anche gli originali.",
+      cta: "Aggiungi la data ora",
+      tools: ["Computer o telefono", "Browser web"],
     },
   },
   privacy: {

@@ -10,6 +10,11 @@ export default {
     android: "ajouter-la-date-sur-une-photo-android",
     batch: "ajouter-la-date-sur-plusieurs-photos",
     retro: "date-comme-un-vieil-appareil-photo",
+    windows: "ajouter-la-date-sur-une-photo-windows",
+    mac: "ajouter-la-date-sur-une-photo-mac",
+    screenshot: "ajouter-la-date-sur-une-capture-d-ecran",
+    scanned: "ajouter-la-date-sur-de-vieilles-photos",
+    timestamp: "ajouter-la-date-et-l-heure-sur-une-photo",
     privacy: "politique-de-confidentialite",
   },
   home: {
@@ -131,6 +136,101 @@ export default {
       tip: "La date vient de la photo elle-même : même les photos récentes du téléphone portent l'année où elles ont été prises, pas une date inventée.",
       cta: "Ajouter la date maintenant",
       tools: ["Navigateur web"],
+    },
+    windows: {
+      title: "Ajouter la date sur une photo sous Windows | DateStamp",
+      description:
+        "L'app Photos de Windows n'inscrit pas la date sur l'image. Faites-le dans Chrome ou Edge en quelques clics, gratuitement et sans rien installer.",
+      h1: "Comment ajouter la date sur une photo sous Windows",
+      intro:
+        "L'app Photos de Windows montre quand une photo a été prise, mais ne peut pas inscrire la date sur l'image elle-même. DateStamp le fait dans Chrome ou Edge, sans rien installer :",
+      steps: [
+        "Ouvrez cette page dans Chrome ou Edge sur votre PC.",
+        "Cliquez sur « Choisir des photos » ou faites glisser les photos depuis l'Explorateur de fichiers.",
+        "DateStamp lit la date de prise de vue de chaque photo ; vous pouvez la changer sous la photo.",
+        "Choisissez le style, le format et le coin.",
+        "Cliquez sur « Enregistrer dans un dossier » et choisissez où vont les copies datées : les originaux restent intacts.",
+      ],
+      tipTitle: "Bon à savoir",
+      tip: "Les photos d'iPhone copiées sur un PC sont souvent des fichiers HEIC. DateStamp les ouvre aussi et enregistre un JPEG.",
+      cta: "Ajouter la date maintenant",
+      tools: ["Windows", "Chrome ou Edge"],
+    },
+    mac: {
+      title: "Ajouter la date sur une photo sur Mac | DateStamp",
+      description:
+        "L'app Photos du Mac affiche la date mais ne l'inscrit pas sur l'image. Faites-le dans Safari ou Chrome en quelques clics, gratuitement.",
+      h1: "Comment ajouter la date sur une photo sur Mac",
+      intro:
+        "Photos sur Mac connaît la date de chaque image, mais ne sait pas l'inscrire dessus. DateStamp le fait, dans Safari ou Chrome :",
+      steps: [
+        "Ouvrez cette page dans Safari ou Chrome sur votre Mac.",
+        "Faites glisser des photos depuis Photos ou le Finder sur la page, ou cliquez sur « Choisir des photos ».",
+        "DateStamp lit la date de prise de vue de chaque photo ; vous pouvez la changer sous la photo.",
+        "Choisissez le style, le format et le coin : la date rétro ressemble à celle d'un appareil des années 90.",
+        "Enregistrez : dans Chrome dans le dossier de votre choix, dans Safari dans le dossier Téléchargements.",
+      ],
+      tipTitle: "Bon à savoir",
+      tip: "Les photos HEIC de l'iPhone s'ouvrent sans conversion. DateStamp enregistre une copie en JPEG, l'original reste tel quel.",
+      cta: "Ajouter la date maintenant",
+      tools: ["Mac", "Safari ou Chrome"],
+    },
+    screenshot: {
+      title: "Ajouter la date sur une capture d'écran | DateStamp",
+      description:
+        "Une capture d'écran n'a pas de date d'appareil photo. DateStamp y inscrit la date et l'heure de sa création, dans le navigateur, gratuitement.",
+      h1: "Comment ajouter la date sur une capture d'écran",
+      intro:
+        "Une capture d'écran n'a pas de données d'appareil photo, donc aucune date à afficher, mais votre téléphone ou votre ordinateur sait quand elle a été prise. DateStamp inscrit cette date sur l'image :",
+      steps: [
+        "Ouvrez DateStamp sur l'appareil où se trouve la capture, ou sur un ordinateur.",
+        "Choisissez les captures, ou faites-les glisser sur la page.",
+        "Sans données d'appareil photo, DateStamp prend la date d'enregistrement du fichier et l'indique sous chacune. Corrigez-la si elle est fausse.",
+        "Choisissez le style et le coin : l'étiquette se lit sur tous les fonds.",
+        "Enregistrez : chaque capture revient en JPEG avec la date dans le coin.",
+      ],
+      tipTitle: "Bon à savoir",
+      tip: "Une capture reçue ou copiée d'un appareil à l'autre peut porter la date de réception plutôt que celle de création. Vérifiez la date sous chacune avant d'enregistrer.",
+      cta: "Ajouter la date maintenant",
+      tools: ["Ordinateur ou téléphone", "Navigateur web"],
+    },
+    scanned: {
+      title: "Ajouter la date sur de vieilles photos | DateStamp",
+      description:
+        "Les scans et les vieux tirages n'ont pas de date dans le fichier. Saisissez l'année de la photo et inscrivez-la comme un appareil argentique.",
+      h1: "Comment ajouter la date sur de vieilles photos et des scans",
+      intro:
+        "Un scan ne connaît que le jour où il a été numérisé, pas l'été où la photo a été prise. Avec DateStamp, vous saisissez la vraie date et l'inscrivez sur l'image, dans le style de l'appareil de l'époque :",
+      steps: [
+        "Numérisez les photos, ou photographiez les tirages avec votre téléphone.",
+        "Ouvrez DateStamp et choisissez les scans.",
+        "Ouvrez la date sous chaque photo et saisissez le jour où elle a été prise. Si vous ne connaissez que l'année, choisissez n'importe quel jour de cette année.",
+        "Choisissez le style rétro : la date orange des appareils argentiques des années 90 va le mieux aux vieilles photos.",
+        "Enregistrez les copies datées : les scans restent inchangés.",
+      ],
+      tipTitle: "Bon à savoir",
+      tip: "La date modifiée sous une photo est aussi écrite dans les données EXIF du fichier enregistré : les apps photo classent alors le scan selon l'année de la prise de vue.",
+      cta: "Ajouter la date maintenant",
+      tools: ["Ordinateur ou téléphone", "Navigateur web"],
+    },
+    timestamp: {
+      title: "Ajouter la date et l'heure sur une photo | DateStamp",
+      description:
+        "Inscrivez sur la photo la date et l'heure de la prise de vue : pour un chantier, une réclamation ou une livraison. Gratuit, dans le navigateur.",
+      h1: "Comment ajouter la date et l'heure sur une photo",
+      intro:
+        "Pour un suivi de chantier, une déclaration de sinistre ou une livraison, la photo doit montrer quand elle a été prise. DateStamp inscrit la date et l'heure à partir des données de la photo elle-même :",
+      steps: [
+        "Ouvrez DateStamp sur votre téléphone ou votre ordinateur et choisissez les photos.",
+        "DateStamp lit la date et l'heure de chaque photo dans les données de l'appareil.",
+        "Dans « Format », choisissez celui avec l'heure, par exemple 14/07/2026 18:30.",
+        "Choisissez un style lisible sur la photo : l'étiquette convient à tous les fonds.",
+        "Enregistrez : chaque photo revient en JPEG pleine taille avec la date et l'heure dans le coin.",
+      ],
+      tipTitle: "Bon à savoir",
+      tip: "L'heure est celle de l'horloge de l'appareil. Une date inscrite peut être modifiée comme toute retouche : à elle seule, elle ne prouve pas l'heure. Gardez aussi les originaux.",
+      cta: "Ajouter la date maintenant",
+      tools: ["Ordinateur ou téléphone", "Navigateur web"],
     },
   },
   privacy: {

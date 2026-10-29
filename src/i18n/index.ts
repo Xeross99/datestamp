@@ -33,11 +33,11 @@ export const strings: Record<Locale, Strings> = { en, pl: keepOneLetterWords(pl)
 export const t = (locale: Locale) => strings[locale]
 
 /** The pages of the site; each locale gives each its own (translated) slug. */
-export const pages = ["home", "iphone", "android", "batch", "retro", "privacy"] as const
+export const pages = ["home", "iphone", "android", "windows", "mac", "batch", "screenshot", "timestamp", "scanned", "retro", "privacy"] as const
 export type Page = (typeof pages)[number]
 
 /** The how-to pages (Guide.astro), each aimed at one search: "add date to photo on iPhone"... */
-export const guidePages = ["iphone", "android", "batch", "retro"] as const satisfies readonly Page[]
+export const guidePages = ["iphone", "android", "windows", "mac", "batch", "screenshot", "timestamp", "scanned", "retro"] as const satisfies readonly Page[]
 export type GuidePage = (typeof guidePages)[number]
 export const isGuide = (page: Page): page is GuidePage => (guidePages as readonly Page[]).includes(page)
 
