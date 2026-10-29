@@ -360,6 +360,17 @@
   .ad-rail {
     display: block;
   }
+  /* Each in its own column, so the content stays in the middle one even
+     when a build has no ads (no rails rendered at all). */
+  .ad-rail-left {
+    grid-column: 1;
+  }
+  .page-content {
+    grid-column: 2;
+  }
+  .ad-rail-right {
+    grid-column: 3;
+  }
   .ad-inline {
     display: none;
   }

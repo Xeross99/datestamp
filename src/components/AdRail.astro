@@ -18,7 +18,7 @@ const live = Boolean(adsense.client && slot)
 
 {
   (live || import.meta.env.DEV) && (
-    <aside class="ad-rail" aria-label={label}>
+    <aside class={`ad-rail ad-rail-${side}`} aria-label={label}>
       {/* Sticky: the ad stays in view while the page scrolls, without covering it. */}
       <div class="sticky top-4 pt-6">
         <p class="mb-1.5 text-center font-mono text-[11px] tracking-widest text-muted uppercase">{label}</p>

@@ -182,3 +182,14 @@ test("the examples show the three sample photos, credited", async ({ page, reque
   }
   await expect(page.getByRole("link", { name: "Kamil Krzysteczko" })).toBeVisible()
 })
+
+test("without ads (a build with no AdSense ids renders no rails) the content keeps its full width", async ({ page, isMobile }) => {
+  test.skip(isMobile, "the rails exist only on wide screens")
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto(pathOf("home", "pl"))
+  await page.evaluate(() => document.querySelectorAll(".ad-rail").forEach((rail) => rail.remove()))
+  const box = await page.locator(".page-content").boundingBox()
+  expect(box!.width).toBeGreaterThanOrEqual(940)
+  // and centred
+  expect(Math.abs(box!.x + box!.width / 2 - 720)).toBeLessThanOrEqual(10)
+})
