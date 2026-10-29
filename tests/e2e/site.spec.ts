@@ -133,10 +133,18 @@ test("the navbar links the page's sections; on a phone they are in a menu that c
   // The <dialog> itself has no size (its sheet is fixed), so look at its links.
   const faqLink = page.locator("#mobile-menu").getByRole("link", { name: strings.pl.nav.faq })
   await expect(faqLink).toBeVisible()
+  // The tint is a layer over the whole page (it goes under iOS Safari's bars),
+  // not the dialog's fixed backdrop.
+  const shade = page.locator("[data-menu-shade]")
+  await expect(shade).toHaveAttribute("data-open", "")
+  await expect(shade).toHaveCSS("position", "absolute")
+  expect((await shade.boundingBox())!.height).toBeGreaterThanOrEqual(await page.evaluate(() => document.documentElement.scrollHeight) - 1)
+  await expect(page.locator("#mobile-menu el-dialog-backdrop")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   await faqLink.click()
   await expect(page.locator("#faq")).toBeInViewport()
   expect(new URL(page.url()).hash).toBe("")
   await expect(faqLink).toBeHidden()
+  await expect(shade).not.toHaveAttribute("data-open")
 })
 
 test.describe("cookie banner", () => {

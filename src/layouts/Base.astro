@@ -220,6 +220,16 @@ const jsonLd = {
          the page in one rounded panel. From lg up the panel floats on the
          frame; below lg the panel is the page itself. -->
     <div class="relative isolate flex min-h-svh w-full flex-col bg-page lg:bg-frame">
+      <!-- The mobile menu's shade. Not the dialog's own backdrop: a fixed
+           full-screen layer leaves iOS Safari's status bar and toolbar
+           undimmed (light bands at the top and bottom). An absolute layer
+           over the whole page goes under the bars too. Shown by the script
+           below while the menu is open. -->
+      <div
+        class="pointer-events-none absolute inset-0 z-50 bg-black/30 opacity-0 transition-opacity duration-300 ease-out data-open:opacity-100 motion-reduce:transition-none lg:hidden"
+        aria-hidden="true"
+        data-menu-shade
+      ></div>
       <header class="flex items-center gap-2 px-4">
         <div class="py-2.5 lg:hidden">
           <button
@@ -299,7 +309,8 @@ const jsonLd = {
       <!-- The mobile menu: a sheet from the left with the same links. -->
       <el-dialog>
         <dialog id="mobile-menu" class="backdrop:bg-transparent lg:hidden" aria-label={strings.nav.menu}>
-          <el-dialog-backdrop class="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-out data-closed:opacity-0"></el-dialog-backdrop>
+          <!-- Transparent: the tint is the page's [data-menu-shade]. -->
+          <el-dialog-backdrop class="fixed inset-0"></el-dialog-backdrop>
           <div tabindex="0" class="fixed inset-0 flex focus:outline-none">
             <el-dialog-panel class="relative flex w-full max-w-80 p-2 transition duration-300 ease-out data-closed:-translate-x-full motion-reduce:transition-none">
               <div class="flex h-full w-full flex-col rounded-xl bg-page shadow-xs ring-1 ring-line">
@@ -381,6 +392,16 @@ const jsonLd = {
       // the menu closes itself on any link.
       const menu = document.querySelector<HTMLDialogElement>("#mobile-menu")
       menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => menu.close()))
+      // The shade follows the menu: in as it opens, out as its closing
+      // animation starts (Elements marks the backdrop data-closed then).
+      const shade = document.querySelector<HTMLElement>("[data-menu-shade]")
+      const backdrop = menu?.querySelector("el-dialog-backdrop")
+      if (menu && shade && backdrop) {
+        const follow = () => shade.toggleAttribute("data-open", menu.open && !backdrop.hasAttribute("data-closed"))
+        const watch = new MutationObserver(follow)
+        watch.observe(menu, { attributes: true, attributeFilter: ["open"] })
+        watch.observe(backdrop, { attributes: true, attributeFilter: ["data-closed"] })
+      }
 
       // Draw a marker scribble under the heading a link jumped to (.scribble
       // in global.css). On a click of a link to this page's section, and on
