@@ -1,0 +1,39 @@
+---
+// One side rail with a vertical ad unit (300×600 or 160×600, depending on
+// the rail's width). Without an AdSense id the rail shows a placeholder in
+// development and is not rendered at all in production.
+import { t, type Locale } from "../i18n"
+import { adsense, type AdRail } from "../lib/ads"
+
+interface Props {
+  side: AdRail
+  locale: Locale
+}
+
+const { side, locale } = Astro.props
+const label = t(locale).ads.label
+const slot = adsense.slots[side]
+const live = Boolean(adsense.client && slot)
+---
+
+{
+  (live || import.meta.env.DEV) && (
+    <aside class="ad-rail" aria-label={label}>
+      {/* Sticky: the ad stays in view while the page scrolls, without covering it. */}
+      <div class="sticky top-4 pt-6">
+        <p class="mb-1.5 text-center font-mono text-[11px] tracking-widest text-muted uppercase">{label}</p>
+        {live ? (
+          <ins
+            class="adsbygoogle block min-h-150"
+            data-ad-client={adsense.client}
+            data-ad-slot={slot}
+            data-ad-format="vertical"
+            data-full-width-responsive="false"
+          />
+        ) : (
+          <div class="flex h-150 items-center justify-center rounded-md bg-subtle font-mono text-xs text-muted">160/300 × 600</div>
+        )}
+      </div>
+    </aside>
+  )
+}

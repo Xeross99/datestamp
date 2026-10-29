@@ -1,0 +1,29 @@
+---
+// One example in "how it looks": a sample photo (src/lib/samples.ts) with a
+// date in one style on it.
+import { href } from "../i18n"
+import type { StampStyle } from "../lib/stamp"
+
+interface Props {
+  sample: string
+  alt: string
+  style: StampStyle
+  date: string
+  corner: "bottom-right" | "bottom-left"
+}
+
+const { sample, alt, style, date, corner } = Astro.props
+---
+
+<div class="relative aspect-4/3 overflow-hidden rounded-lg bg-photo">
+  <img
+    class="size-full object-cover"
+    src={href(`/samples/${sample}.webp`)}
+    alt={alt}
+    width="800"
+    height="600"
+    loading="lazy"
+    decoding="async"
+  />
+  <span class:list={["stamp absolute bottom-3 text-[15px]", corner === "bottom-right" ? "right-3.5" : "left-3.5"]} data-style={style}>{date}</span>
+</div>

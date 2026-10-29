@@ -1,0 +1,29 @@
+---
+// The privacy policy. AdSense requires one that names its cookies, and it
+// is where the "photos never leave your device" promise is written down.
+import Base from "../layouts/Base.astro"
+import { t, type Locale } from "../i18n"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const content = t(locale).privacy
+const email = import.meta.env.PUBLIC_CONTACT_EMAIL
+---
+
+<Base locale={locale} page="privacy" title={content.title} description={content.description}>
+  <article class="max-w-170 pt-6 pb-8">
+    <h1 class="mb-6 text-4xl font-extrabold tracking-tight">{content.h1}</h1>
+    {
+      content.sections.map(({ title, body }) => (
+        <section class="mb-6">
+          <h2 class="mb-2 text-xl font-bold">{title}</h2>
+          <p class="text-muted">{body}</p>
+        </section>
+      ))
+    }
+    {email && <p>{content.contact.replace("{email}", email)}</p>}
+  </article>
+</Base>

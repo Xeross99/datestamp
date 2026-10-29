@@ -1,0 +1,439 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Colour tokens. Components use them through Tailwind's semantic colours
+   (bg-page, bg-surface, text-ink, text-muted, border-line, text-accent,
+   bg-accent-soft, text-success...), never raw colours, so a theme is only
+   a new set of token values and needs no dark: variants.
+   ------------------------------------------------------------------ */
+:root {
+  --bg: #fbfaf8;
+  --surface: #ffffff;
+  --text: #1c1b1a;
+  --muted: #6b6762;
+  --border: #e6e2dc;
+  --accent: #ff7a1a;
+  --accent-soft: #fff1e6;
+  --on-accent: #1c1b1a;
+  --subtle: #f1eee9;
+  --border-strong: #cfc9c1;
+  --photo: #2a2d30;
+  --frame: #efece6;
+  /* Text on accent-soft (notices): dark orange, 7:1 on #fff1e6. */
+  --accent-ink: #8a3a08;
+  --success: #1a7f46;
+  color-scheme: light dark;
+}
+
+/* The theme: the system's by default, or the one picked in the header
+   (data-theme on <html>, set before first paint in Base.astro). The dark
+   tokens are written twice because CSS cannot share one block between a
+   media query and a selector. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #2a2826;
+    --surface: #34322f;
+    --text: #f5f2ed;
+    --muted: #bdb6ae;
+    --border: #4c4844;
+    --accent-soft: #55341a;
+    --subtle: #3d3a37;
+    --border-strong: #645f59;
+    --photo: #161718;
+    --frame: #201e1c;
+    --accent-ink: #ffd3ad;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #2a2826;
+  --surface: #34322f;
+  --text: #f5f2ed;
+  --muted: #bdb6ae;
+  --border: #4c4844;
+  --accent-soft: #55341a;
+  --subtle: #3d3a37;
+  --border-strong: #645f59;
+  --photo: #161718;
+  --frame: #201e1c;
+  --accent-ink: #ffd3ad;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-page: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-subtle: var(--subtle);
+  --color-line-strong: var(--border-strong);
+  --color-photo: var(--photo);
+  --color-frame: var(--frame);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+}
+
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --animate-shine: shine 1.4s linear infinite;
+  --animate-skeleton: skeleton 1.2s ease-in-out infinite;
+  --animate-pop: pop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+
+  @keyframes shine {
+    to {
+      background-position: -200% 0;
+    }
+  }
+  @keyframes skeleton {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0 0;
+    }
+  }
+  @keyframes pop {
+    from {
+      transform: scale(0);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   Theme changes fade smoothly (src/lib/theme.ts adds .theme-transition to
+   <html> for 0.3 s). Only the colour tokens animate, on <html> alone:
+   registered with @property they interpolate, and every element inherits
+   the same value each frame. Animating each element's own colour instead
+   compounds through inheritance (every level starts from its parent's
+   half-faded value), lags behind and jumps at the end. Element transitions
+   are off meanwhile for the same reason, except the theme switch's
+   sliding highlight.
+   ------------------------------------------------------------------ */
+@property --bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #fbfaf8;
+}
+@property --surface {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ffffff;
+}
+@property --text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1c1b1a;
+}
+@property --muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #6b6762;
+}
+@property --border {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e6e2dc;
+}
+@property --accent-soft {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #fff1e6;
+}
+@property --subtle {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f1eee9;
+}
+@property --border-strong {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #cfc9c1;
+}
+@property --accent-ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #8a3a08;
+}
+@property --frame {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #efece6;
+}
+@property --photo {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #2a2d30;
+}
+:root.theme-transition {
+  transition:
+    --bg 0.3s ease,
+    --surface 0.3s ease,
+    --text 0.3s ease,
+    --muted 0.3s ease,
+    --border 0.3s ease,
+    --accent-soft 0.3s ease,
+    --subtle 0.3s ease,
+    --border-strong 0.3s ease,
+    --photo 0.3s ease,
+    --frame 0.3s ease,
+    --accent-ink 0.3s ease;
+}
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition: none !important;
+}
+.theme-transition .theme-switch-indicator {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@layer base {
+  body {
+    @apply bg-page font-sans text-ink antialiased;
+  }
+  /* `hidden` must win over any display utility (flex, grid...). */
+  [hidden] {
+    display: none !important;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  /* Navbar links to a section (#steps, #faq) glide there, unless the
+     visitor asked for less motion; the target keeps a little air above. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  [id] {
+    scroll-margin-top: 1.5rem;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Pieces too stateful for utilities in markup: the sliding theme highlight
+   (positioned from data-theme before JS runs), the ad layout breakpoints
+   shared with src/lib/ads.ts, and a photo card's states.
+   Deliberately NOT in @layer components: Tailwind's utilities layer beats
+   every layered rule, so a state rule there loses to the element's own
+   utilities (the ready badge stayed visible because of its `flex`).
+   Unlayered rules beat all layers.
+   ------------------------------------------------------------------ */
+/* Buttons are 28 px: 0, 28 and 56 px. */
+.theme-switch-indicator {
+  transform: translateX(56px);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+:root[data-theme="light"] .theme-switch-indicator {
+  transform: translateX(0);
+}
+:root[data-theme="dark"] .theme-switch-indicator {
+  transform: translateX(28px);
+}
+
+/* Moving to another page of the site: the page itself swaps at once, and
+   only the navbar's underline (view-transition-name: nav-indicator) slides
+   from the old item to the new one. Browsers without cross-document view
+   transitions (Firefox for now) just load the page. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+::view-transition-group(nav-indicator) {
+  animation-duration: 0.35s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The section a navbar link jumped to (#steps, #faq): a marker scribble is
+   drawn under its heading from left to right, stays a moment and fades, so
+   the eye finds where it landed. Base.astro wraps the heading's text and
+   adds the SVG and .is-target (also on a second click of the same link,
+   which :target alone would not replay) once the smooth scroll has
+   stopped, so the drawing happens where the visitor can see it. */
+.scribble {
+  position: absolute;
+  /* Under the text, below the descenders, never across the letters. */
+  top: 100%;
+  left: -0.15em;
+  z-index: -1;
+  width: calc(100% + 0.3em);
+  height: 0.6em;
+  fill: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+.is-target .scribble {
+  animation: scribble-draw 2.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes scribble-draw {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0.6;
+  }
+  28% {
+    clip-path: inset(0 0 0 0);
+    opacity: 0.6;
+  }
+  70% {
+    clip-path: inset(0 0 0 0);
+    opacity: 0.6;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-target .scribble {
+    animation-name: scribble-fade;
+  }
+  @keyframes scribble-fade {
+    0%,
+    70% {
+      opacity: 0.6;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+/* A date drawn in HTML (the style tiles, the position picker, the
+   examples), matching how src/lib/stamp.ts draws it on the photo. */
+.stamp {
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+/* The outlines are thin and soft: enough to hold on a bright or busy
+   photo, not a heavy black border (stamp.ts draws them the same way). */
+.stamp[data-style="classic"] {
+  color: #fff;
+  text-shadow:
+    -0.6px -0.6px 0 rgb(0 0 0 / 0.55), 0.6px -0.6px 0 rgb(0 0 0 / 0.55), -0.6px 0.6px 0 rgb(0 0 0 / 0.55), 0.6px 0.6px 0 rgb(0 0 0 / 0.55),
+    0 1px 3px rgb(0 0 0 / 0.45);
+}
+.stamp[data-style="label"] {
+  color: #fff;
+  background: rgb(0 0 0 / 0.65);
+  padding: 0.15em 0.45em;
+  border-radius: 0.25em;
+}
+.stamp[data-style="retro"] {
+  font-family: var(--font-mono);
+  color: #ff8a1f;
+  /* A thin dark outline, so the digits hold on busy or green photos, then the glow. */
+  text-shadow:
+    -0.5px -0.5px 0 rgb(0 0 0 / 0.45), 0.5px -0.5px 0 rgb(0 0 0 / 0.45), -0.5px 0.5px 0 rgb(0 0 0 / 0.45), 0.5px 0.5px 0 rgb(0 0 0 / 0.45),
+    0 0 0.3em rgb(255 98 0 / 0.45);
+}
+
+/* Page with the two ad rails, inside the layout's panel. Below
+   RAILS_MIN_WIDTH (src/lib/ads.ts) the rails are hidden and the page is one
+   column; keep the values equal. 1392 = 160 + 24 + 960 + 24 + 160 plus the
+   panel's 2 × 8 px margin and 2 × 24 px padding. */
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.ad-rail {
+  display: none;
+}
+@media (min-width: 1392px) {
+  .page {
+    grid-template-columns: 160px minmax(0, 960px) 160px;
+    justify-content: center;
+    column-gap: 24px;
+  }
+  .ad-rail {
+    display: block;
+  }
+  .ad-inline {
+    display: none;
+  }
+}
+@media (min-width: 1680px) {
+  .page {
+    grid-template-columns: 300px minmax(0, 960px) 300px;
+  }
+}
+
+/* A photo card's state: data-state on .photo, set in src/lib/editor.ts.
+   waiting/loading: shimmering placeholder; queued: dimmed; loading/working:
+   accent ring and spinner; done: green ring and a check. */
+.photo[data-state="waiting"] .photo-frame,
+.photo[data-state="loading"] .photo-frame {
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(100deg, var(--bg) 30%, var(--border) 50%, var(--bg) 70%);
+  background-size: 300% 100%;
+  @apply animate-skeleton;
+}
+.photo[data-state="waiting"] canvas,
+.photo[data-state="loading"] canvas {
+  display: none;
+}
+.photo[data-state="queued"] .photo-frame {
+  @apply opacity-55 grayscale-60;
+}
+.photo[data-state="loading"] .photo-frame,
+.photo[data-state="working"] .photo-frame {
+  @apply ring-2 ring-accent;
+}
+.photo[data-state="done"] .photo-frame {
+  @apply ring-2 ring-success;
+}
+.photo[data-state="ready"] .photo-badge {
+  display: none;
+}
+.photo[data-state="waiting"] .photo-badge-icon,
+.photo[data-state="queued"] .photo-badge-icon {
+  @apply border-2 border-white/60;
+}
+.photo[data-state="loading"] .photo-badge-icon,
+.photo[data-state="working"] .photo-badge-icon {
+  @apply animate-spin border-2 border-white/25 border-t-accent;
+}
+.photo[data-state="done"] .photo-badge {
+  @apply bg-success;
+}
+.photo[data-state="done"] .photo-badge-icon {
+  @apply relative animate-pop bg-white;
+}
+.photo[data-state="done"] .photo-badge-icon::after {
+  content: "";
+  position: absolute;
+  left: 4.5px;
+  top: 2px;
+  width: 4px;
+  height: 7px;
+  border: solid var(--success);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* The progress bar's finished look (src/lib/progress.ts sets data-finished). */
+.progress[data-finished] .progress-fill {
+  @apply animate-none bg-success bg-none;
+}
+.progress[data-finished] .progress-label::before {
+  content: "✓ ";
+  color: var(--success);
+}
+.progress[data-failed] .progress-fill {
+  @apply animate-none bg-red-500 bg-none;
+}
+.progress[data-failed] .progress-label {
+  @apply text-red-500;
+}

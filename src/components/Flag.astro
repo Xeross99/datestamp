@@ -1,0 +1,85 @@
+---
+// A small flag for a language in the language menu. A language is not a
+// country, so each one gets the flag its readers expect: en → United
+// Kingdom, pt → Brazil (the Portuguese copy is Brazilian: "celular",
+// "baixar", "você"). Simplified shapes, no coats of arms: they are 20 px wide.
+import type { Locale } from "../i18n"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+// The Union Jack clips its red diagonals; the flag shows twice on a page
+// (the summary and the list), so each copy needs its own clipPath id.
+const clip = `flag-uk-${Math.random().toString(36).slice(2, 8)}`
+---
+
+<svg class="h-3.5 w-5 flex-none rounded-[3px] shadow-[0_0_0_1px_rgba(0,0,0,0.12)]" viewBox={locale === "en" ? "0 0 60 30" : "0 0 60 40"} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  {
+    locale === "en" && (
+      <>
+        <clipPath id={clip}>
+          <path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z" />
+        </clipPath>
+        <rect width="60" height="30" fill="#012169" />
+        <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6" />
+        <path d="M0,0 L60,30 M60,0 L0,30" clip-path={`url(#${clip})`} stroke="#C8102E" stroke-width="4" />
+        <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10" />
+        <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6" />
+      </>
+    )
+  }
+  {
+    locale === "pl" && (
+      <>
+        <rect width="60" height="20" fill="#fff" />
+        <rect y="20" width="60" height="20" fill="#DC143C" />
+      </>
+    )
+  }
+  {
+    locale === "de" && (
+      <>
+        <rect width="60" height="14" fill="#000" />
+        <rect y="13.3" width="60" height="14" fill="#DD0000" />
+        <rect y="26.6" width="60" height="13.4" fill="#FFCE00" />
+      </>
+    )
+  }
+  {
+    locale === "es" && (
+      <>
+        <rect width="60" height="40" fill="#AA151B" />
+        <rect y="10" width="60" height="20" fill="#F1BF00" />
+      </>
+    )
+  }
+  {
+    locale === "fr" && (
+      <>
+        <rect width="20" height="40" fill="#0055A4" />
+        <rect x="20" width="20" height="40" fill="#fff" />
+        <rect x="40" width="20" height="40" fill="#EF4135" />
+      </>
+    )
+  }
+  {
+    locale === "it" && (
+      <>
+        <rect width="20" height="40" fill="#009246" />
+        <rect x="20" width="20" height="40" fill="#fff" />
+        <rect x="40" width="20" height="40" fill="#CE2B37" />
+      </>
+    )
+  }
+  {
+    locale === "pt" && (
+      <>
+        <rect width="60" height="40" fill="#009C3B" />
+        <polygon points="30,4 56,20 30,36 4,20" fill="#FFDF00" />
+        <circle cx="30" cy="20" r="8.5" fill="#002776" />
+      </>
+    )
+  }
+</svg>

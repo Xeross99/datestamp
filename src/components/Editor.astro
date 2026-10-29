@@ -1,0 +1,163 @@
+---
+// The photo editor. The markup is static HTML (good for SEO and first
+// paint); src/lib/editor.ts brings it to life in the browser. Strings for
+// the dynamic parts travel in data-strings.
+//
+// Two columns on a computer: the photos (drop zone, progress, thumbnails)
+// and the settings (style, format, position, size, saving). On a phone they
+// stack in that order: add photos, adjust, save.
+import Select from "./Select.astro"
+import { t, type Locale } from "../i18n"
+import { formatDate, type StampPosition, type StampStyle } from "../lib/stamp"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const strings = t(locale)
+const s = strings.editor
+const sample = new Date(2026, 6, 14, 18, 30)
+const sampleText = formatDate(sample, strings.dateFormats[0])
+const styles = Object.entries(s.styles) as [StampStyle, string][]
+const positions: StampPosition[] = ["top-left", "top-right", "bottom-left", "bottom-right"]
+const corner: Record<StampPosition, string> = {
+  "top-left": "items-start justify-start",
+  "top-right": "items-start justify-end",
+  "bottom-left": "items-end justify-start",
+  "bottom-right": "items-end justify-end",
+}
+const button = "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition disabled:cursor-not-allowed"
+---
+
+<div
+  class="flex flex-wrap overflow-hidden rounded-2xl border border-line bg-surface"
+  data-editor
+  data-strings={JSON.stringify(s)}
+  data-default-format={strings.dateFormats[0]}
+  data-formats={JSON.stringify(strings.dateFormats)}
+  data-sample={sample.toISOString()}
+>
+  <!-- The input lives outside the zone: the zone opens it with input.click(),
+       and a click from inside the zone would open it twice. -->
+  <input type="file" accept="image/*,.heic,.heif" multiple hidden data-input />
+
+  <div class="flex min-w-0 flex-[999_1_520px] flex-col gap-4 p-4 sm:p-5">
+    <div
+      class="group flex min-h-40 flex-1 cursor-pointer flex-col items-center justify-center gap-3.5 rounded-xl border-[1.5px] border-dashed border-line-strong bg-page p-6 text-center transition-colors hover:border-accent data-dragging:border-accent data-dragging:bg-accent-soft sm:min-h-95"
+      data-dropzone
+    >
+      <svg class="size-11 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="5" width="15" height="13" rx="2"></rect><circle cx="8.5" cy="10" r="1.5"></circle><path d="m3 16 4-4 4 4 2-2 5 5"></path><path d="M20 3v6M17 6h6"></path>
+      </svg>
+      <div class="pointer-coarse:hidden">
+        <p class="text-xl font-semibold">{s.dropTitle}</p>
+        <p class="text-muted">{s.dropHint}</p>
+      </div>
+      <button type="button" class={`${button} h-12 bg-accent px-6 text-on-accent hover:brightness-105`}>{s.pick}</button>
+      <p class="font-mono text-xs text-muted">JPG · PNG · HEIC · WEBP</p>
+    </div>
+
+    <!-- Opens and closes by animating its height (grid rows 0fr ↔ 1fr) with a
+         fade and a small slide, so the photos below move smoothly instead of
+         jumping. Closed, it is inert and has no height (progress.ts). -->
+    <div
+      class="progress -my-2 grid -translate-y-1 grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity,translate,margin] duration-300 ease-out data-open:my-0 data-open:translate-y-0 data-open:grid-rows-[1fr] data-open:opacity-100 motion-reduce:transition-none"
+      data-progress
+      inert
+    >
+      <div class="min-h-0 overflow-hidden">
+        <div class="rounded-xl border border-line bg-page px-3.5 py-3">
+          <div class="mb-2 flex items-baseline justify-between gap-3 text-[15px] font-semibold" aria-live="polite">
+            <span class="progress-label" data-progress-label></span>
+            <span class="font-mono text-[13px] font-normal text-muted tabular-nums" data-progress-count></span>
+          </div>
+          <div class="h-1.5 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-fill h-full origin-left rounded-full bg-accent transition-transform duration-350" data-progress-fill></div>
+          </div>
+          <!-- On phones the share sheet needs a fresh tap once a long export is done. -->
+          <button type="button" class={`${button} mt-3 h-11 bg-accent px-4 text-on-accent`} data-save-now hidden>{s.saveNow}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 empty:hidden sm:grid-cols-3 lg:grid-cols-4" data-photos></div>
+
+    <button
+      type="button"
+      class={`${button} h-11 self-stretch border border-dashed border-line-strong bg-surface px-4 text-sm font-medium hover:border-accent sm:self-start`}
+      data-add-more
+      hidden
+    >
+      <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      {s.addMore}
+    </button>
+  </div>
+
+  <div class="flex min-w-0 flex-[1_1_320px] flex-col gap-5 border-t border-line p-4 sm:p-5 lg:border-t-0 lg:border-l">
+    <fieldset class="m-0 flex min-w-0 flex-col gap-5 border-0 p-0" data-options>
+      <fieldset class="m-0 min-w-0 border-0 p-0">
+        <legend class="mb-2 p-0 text-[13px] font-semibold">{s.style}</legend>
+        <div class="grid grid-cols-3 gap-2">
+          {
+            styles.map(([value, name]) => (
+              <label class="group flex cursor-pointer flex-col gap-1.5 rounded-lg border border-line bg-surface p-1.5 transition hover:border-line-strong has-checked:border-accent has-checked:ring-1 has-checked:ring-accent has-focus-visible:outline-2 has-focus-visible:outline-accent has-disabled:cursor-not-allowed has-disabled:opacity-60">
+                <input class="sr-only" type="radio" name="style" value={value} />
+                <span class="flex h-13 items-end justify-end overflow-hidden rounded bg-photo p-1.5">
+                  <span class="stamp text-[10px]" data-style={value} data-stamp-sample>
+                    {sampleText}
+                  </span>
+                </span>
+                <span class="text-center text-[13px] group-has-checked:font-semibold">{name}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <Select name="format" label={s.format} options={strings.dateFormats.map((format) => ({ value: format, label: formatDate(sample, format) }))} />
+
+      <fieldset class="m-0 min-w-0 border-0 p-0">
+        <legend class="mb-2 p-0 text-[13px] font-semibold">
+          {s.position} <span class="font-normal text-muted">· <span data-position-label>{s.positions["bottom-right"]}</span></span>
+        </legend>
+        <div class="grid grid-cols-2 grid-rows-[repeat(2,3.25rem)] gap-1 rounded-lg bg-photo p-1">
+          {
+            positions.map((position) => (
+              <label class={`group flex cursor-pointer overflow-hidden rounded-md bg-white/4 px-2.5 py-2 transition ${corner[position]} hover:bg-white/8 has-checked:bg-accent/16 has-checked:ring-2 has-checked:ring-accent has-checked:ring-inset has-focus-visible:outline-2 has-focus-visible:outline-accent has-disabled:cursor-not-allowed`}>
+                <input class="sr-only" type="radio" name="position" value={position} aria-label={s.positions[position]} />
+                <span class="stamp text-[12px] opacity-30 transition-opacity group-has-checked:opacity-100" data-style="retro" data-stamp-sample data-stamp-live>
+                  {sampleText}
+                </span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <div>
+        <label for="size" class="mb-1 flex justify-between text-[13px] font-semibold">
+          {s.size} <span class="font-normal text-muted" data-size-label>{s.sizes.medium}</span>
+        </label>
+        <input id="size" type="range" name="size" min="2" max="10" step="0.5" value="4" class="h-11 w-full cursor-pointer accent-accent disabled:cursor-not-allowed" />
+      </div>
+    </fieldset>
+
+    <div class="mt-auto flex flex-col gap-2">
+      <button type="button" class={`${button} h-12 bg-accent font-bold text-on-accent hover:brightness-105 disabled:bg-subtle disabled:text-muted disabled:hover:brightness-100`} data-save-all disabled>
+        {s.downloadAll}
+      </button>
+      <div class="flex gap-2">
+        <button type="button" class={`${button} h-11 flex-1 border border-line bg-surface px-3 text-sm font-medium hover:border-line-strong`} data-zip hidden>{s.downloadAsZip}</button>
+        <button type="button" class={`${button} h-11 px-3 text-sm font-medium text-muted hover:text-ink`} data-clear hidden>{s.clear}</button>
+      </div>
+      <p class="text-center text-[13px] text-muted" data-save-hint>{s.saveFirst}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { mountEditor } from "../lib/editor"
+
+  document.querySelectorAll<HTMLElement>("[data-editor]").forEach(mountEditor)
+</script>

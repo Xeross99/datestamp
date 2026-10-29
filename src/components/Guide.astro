@@ -1,0 +1,80 @@
+---
+// A how-to page aimed at one long-tail search ("add date to photo on
+// iPhone"). The editor sits right on the page, so the visitor does not
+// have to click through to the home page.
+import Base from "../layouts/Base.astro"
+import Editor from "./Editor.astro"
+import InlineAd from "./InlineAd.astro"
+import { guidePages, href, pathOf, t, type GuidePage, type Locale } from "../i18n"
+
+interface Props {
+  locale: Locale
+  guide: GuidePage
+}
+
+const { locale, guide } = Astro.props
+const strings = t(locale)
+const content = strings.guides[guide]
+const others = guidePages.filter((other) => other !== guide)
+
+const howToJsonLd = {
+  "@type": "HowTo",
+  name: content.h1,
+  description: content.description,
+  totalTime: "PT1M",
+  estimatedCost: { "@type": "MonetaryAmount", currency: "EUR", value: "0" },
+  tool: content.tools.map((name) => ({ "@type": "HowToTool", name })),
+  step: content.steps.map((text, index) => ({ "@type": "HowToStep", position: index + 1, text })),
+}
+---
+
+<Base locale={locale} page={guide} title={content.title} description={content.description} schema={[howToJsonLd]}>
+  <article class="max-w-170 pt-6">
+    <h1 class="mb-3 text-[28px] leading-tight font-semibold tracking-tight text-balance sm:text-4xl">{content.h1}</h1>
+    <p class="mb-6 text-muted">{content.intro}</p>
+    <ol class="mb-6 list-decimal space-y-2 pl-6">
+      {content.steps.map((step) => <li>{step}</li>)}
+    </ol>
+    <aside class="flex gap-3 rounded-xl bg-accent-soft p-4 ring-1 ring-accent/25 sm:p-5" aria-label={content.tipTitle}>
+      <svg class="size-5 flex-none text-accent" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+        ></path>
+      </svg>
+      <div>
+        <h3 class="text-sm font-semibold text-accent-ink">{content.tipTitle}</h3>
+        <p class="mt-1.5 text-sm/6 text-accent-ink/90">{content.tip}</p>
+      </div>
+    </aside>
+  </article>
+
+  <InlineAd locale={locale} />
+
+  <section class="py-8" id="editor">
+    <h2 class="mb-4 text-2xl font-bold">{content.cta}</h2>
+    <Editor locale={locale} />
+  </section>
+
+  <!-- The other guides: links between them help readers and search engines find them all. -->
+  <section aria-labelledby="more-guides" class="pb-4">
+    <h2 id="more-guides" class="mb-3 text-xl font-semibold tracking-tight sm:text-[22px]">{strings.home.guidesTitle}</h2>
+    <ul class="grid gap-2 sm:grid-cols-2">
+      {
+        others.map((other) => (
+          <li>
+            <a
+              class="flex min-h-12 items-center justify-between gap-3 rounded-lg border border-line bg-surface px-3.5 py-2 text-[15px] no-underline hover:border-line-strong"
+              href={href(pathOf(other, locale))}
+            >
+              {strings.guides[other].h1}
+              <svg class="size-4 flex-none text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+</Base>

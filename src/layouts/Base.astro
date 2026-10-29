@@ -1,0 +1,455 @@
+---
+import "../styles/global.css"
+import AdRail from "../components/AdRail.astro"
+import ConsentBanner from "../components/ConsentBanner.astro"
+import Flag from "../components/Flag.astro"
+import LogoMark from "../components/LogoMark.astro"
+import ThemeSwitch from "../components/ThemeSwitch.astro"
+import { defaultLocale, href, isGuide, locales, ogLocales, pathOf, t, type Locale, type Page } from "../i18n"
+import { adsense } from "../lib/ads"
+
+interface Props {
+  locale: Locale
+  page: Page
+  title: string
+  description: string
+  /** Page-specific JSON-LD nodes (FAQPage, HowTo...), joined into the page's @graph. */
+  schema?: Record<string, unknown>[]
+}
+
+const { locale, page, title, description, schema = [] } = Astro.props
+const strings = t(locale)
+const absoluteUrl = (path: string) => new URL(href(path), Astro.site).href
+const absolute = (other: Locale) => absoluteUrl(pathOf(page, other))
+const canonical = absolute(locale)
+const home = absoluteUrl(pathOf("home", locale))
+const siteRoot = absoluteUrl(pathOf("home", defaultLocale))
+const ogImage = absoluteUrl(`/og/${locale}.png`)
+// Runs first in <head>, before any Google script: applies the stored
+// cookie choice (src/lib/consent.ts, same key and rules). Without one, ad
+// requests are paused and Google Analytics is not loaded at all; with
+// consent for statistics, GA4 loads right away (Consent Mode v2).
+const gaId = import.meta.env.PUBLIC_GA_ID ?? ""
+const consentScript = `(function () {
+  var consent = null;
+  try { consent = JSON.parse(localStorage.getItem("datestamp:consent")); } catch (e) {}
+  var chosen = consent && typeof consent.ads === "boolean" && typeof consent.analytics === "boolean";
+  if (${JSON.stringify(Boolean(adsense.client))}) {
+    var ads = (window.adsbygoogle = window.adsbygoogle || []);
+    if (chosen) ads.requestNonPersonalizedAds = consent.ads ? 0 : 1;
+    else ads.pauseAdRequests = 1;
+  }
+  var ga = ${JSON.stringify(gaId)};
+  if (!ga) return;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+  var grant = function (yes) { return yes ? "granted" : "denied"; };
+  gtag("consent", "default", { analytics_storage: "denied", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" });
+  if (!chosen || !consent.analytics) return;
+  gtag("consent", "update", { analytics_storage: "granted", ad_storage: grant(consent.ads), ad_user_data: grant(consent.ads), ad_personalization: grant(consent.ads) });
+  gtag("js", new Date());
+  gtag("config", ga);
+  var script = document.createElement("script");
+  script.async = true;
+  script.src = "https://www.googletagmanager.com/gtag/js?id=" + ga;
+  document.head.appendChild(script);
+})();`
+// The cookie banner is needed only where AdSense or GA4 runs (and shown on the dev server).
+const askConsent = Boolean(adsense.client || gaId) || import.meta.env.DEV
+// Browsers keep a favicon for a long time: bump this with every new icon
+// (npm run assets), so the new one replaces the cached one.
+const ICON_VERSION = 2
+const icon = (path: string) => `${href(path)}?v=${ICON_VERSION}`
+
+// The navbar: the editor and its sections on the home page, the guide.
+const homePath = href(pathOf("home", locale))
+const navItems = [
+  { label: strings.nav.editor, href: homePath, current: page === "home", section: page === "home" ? "top" : undefined },
+  { label: strings.nav.how, href: `${homePath}#steps`, current: false, section: page === "home" ? "steps" : undefined },
+  { label: strings.nav.faq, href: `${homePath}#faq`, current: false, section: page === "home" ? "faq" : undefined },
+  { label: strings.nav.guides, href: `${homePath}#guides`, current: isGuide(page), section: page === "home" ? "guides" : undefined },
+]
+
+// One @graph per page: the site, the tool itself, this page (with its
+// breadcrumb), plus what the page adds. Stable @ids tie the nodes together
+// across pages, so search engines and AI answer engines see one entity.
+const ids = { website: `${siteRoot}#website`, app: `${siteRoot}#app`, page: `${canonical}#webpage` }
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": ids.website,
+      url: siteRoot,
+      name: "DateStamp",
+      description: t(defaultLocale).home.description,
+      inLanguage: [...locales],
+    },
+    {
+      "@type": "WebApplication",
+      "@id": ids.app,
+      name: "DateStamp",
+      url: home,
+      description: strings.home.description,
+      applicationCategory: "MultimediaApplication",
+      applicationSubCategory: "Photo editing",
+      operatingSystem: "Any (runs in the web browser)",
+      browserRequirements: "A modern web browser with JavaScript",
+      isAccessibleForFree: true,
+      offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+      featureList: [...strings.home.facts, ...strings.home.steps.items.map((step) => `${step.title}: ${step.body}`)],
+      screenshot: ogImage,
+      image: absoluteUrl("/icon-512.png"),
+      inLanguage: locale,
+    },
+    {
+      "@type": "WebPage",
+      "@id": ids.page,
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: locale,
+      isPartOf: { "@id": ids.website },
+      about: { "@id": ids.app },
+      primaryImageOfPage: { "@type": "ImageObject", url: ogImage, width: 1200, height: 630 },
+      ...(page === "home"
+        ? {}
+        : {
+            breadcrumb: {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "DateStamp", item: home },
+                { "@type": "ListItem", position: 2, name: title.split(" | ")[0], item: canonical },
+              ],
+            },
+          }),
+    },
+    ...schema.map((node) => ({ ...node, isPartOf: { "@id": ids.page } })),
+  ],
+}
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Before any CSS paints: the picked theme (src/lib/theme.ts, same key). -->
+    <script is:inline>
+      try {
+        const theme = localStorage.getItem("datestamp:theme")
+        if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme
+      } catch {}
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href={canonical} />
+    {locales.map((other) => <link rel="alternate" hreflang={other} href={absolute(other)} />)}
+    <link rel="alternate" hreflang="x-default" href={absolute(defaultLocale)} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DateStamp" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocales[locale]} />
+    {locales.filter((other) => other !== locale).map((other) => <meta property="og:locale:alternate" content={ogLocales[other]} />)}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={strings.home.h1} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href={icon("/favicon.svg")} type="image/svg+xml" />
+    <link rel="icon" href={icon("/favicon-32.png")} type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href={icon("/apple-touch-icon.png")} />
+    <link rel="manifest" href={href("/manifest.webmanifest")} />
+    <meta name="application-name" content="DateStamp" />
+    <meta name="apple-mobile-web-app-title" content="DateStamp" />
+    <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#141312" media="(prefers-color-scheme: dark)" />
+    <link rel="sitemap" href={href("/sitemap-index.xml")} />
+    <!-- For AI assistants and answer engines: what the site is, in plain text. -->
+    <link rel="alternate" type="text/plain" title="llms.txt" href={href("/llms.txt")} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {(adsense.client || gaId) && <script is:inline set:html={consentScript} />}
+    {
+      adsense.client && (
+        <script
+          is:inline
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsense.client}`}
+          crossorigin="anonymous"
+        />
+      )
+    }
+  </head>
+  <body>
+    <!-- Stacked layout (after Catalyst's): a navbar on the frame colour, and
+         the page in one rounded panel. From lg up the panel floats on the
+         frame; below lg the panel is the page itself. -->
+    <div class="relative isolate flex min-h-svh w-full flex-col bg-page lg:bg-frame">
+      <header class="flex items-center gap-2 px-4">
+        <div class="py-2.5 lg:hidden">
+          <button
+            type="button"
+            command="show-modal"
+            commandfor="mobile-menu"
+            class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-ink hover:bg-ink/5"
+            aria-label={strings.nav.menu}
+          >
+            <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M2 6.75C2 6.34 2.34 6 2.75 6h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 6.75Zm0 6.5c0-.41.34-.75.75-.75h14.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z"></path></svg>
+          </button>
+        </div>
+        <nav class="flex min-w-0 flex-1 items-center gap-2 py-2.5 lg:gap-4" aria-label="DateStamp">
+          <a class="flex items-center gap-2 rounded-lg px-2 py-1.5 text-[19px] font-extrabold tracking-tight no-underline hover:bg-ink/5 lg:text-[20px]" href={href(pathOf("home", locale))}>
+            <LogoMark class="size-7 flex-none rounded-[7px] ring-1 ring-ink/10" />
+            <span>Date<span class="text-accent">Stamp</span></span>
+          </a>
+          <div class="h-6 w-px bg-line max-lg:hidden" aria-hidden="true"></div>
+          <ul class="relative flex items-center gap-1 max-lg:hidden" data-nav>
+            <!-- One underline for the current item, moved by the script below:
+                 it follows the scroll on the home page, and its
+                 view-transition-name lets the browser slide it to its new
+                 place when another page opens. -->
+            <span
+              class="absolute -bottom-2.5 left-0 h-0.5 w-0 rounded-full bg-ink opacity-0 [view-transition-name:nav-indicator] data-ready:opacity-100 data-ready:transition-[translate,width] data-ready:duration-300 data-ready:ease-out motion-reduce:transition-none"
+              aria-hidden="true"
+              data-nav-indicator
+            />
+            {
+              navItems.map((item) => (
+                <li>
+                  <a
+                    class="flex items-center rounded-lg px-2.5 py-2 text-sm/6 font-medium text-ink no-underline hover:bg-ink/5"
+                    href={item.href}
+                    aria-current={item.current ? "page" : undefined}
+                    data-section={item.section}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="-ml-2 flex-1 lg:-ml-4" aria-hidden="true"></div>
+          <!-- Under 360 px the switch would not fit next to the language: it is in the menu then. -->
+          <div class="max-[359px]:hidden"><ThemeSwitch locale={locale} /></div>
+          <details class="relative text-sm">
+            <summary
+              class="flex h-8.5 cursor-pointer list-none items-center gap-2 rounded-full border border-line px-3 font-medium hover:border-muted"
+              aria-label="Language"
+            >
+              <Flag locale={locale} />
+              <span class="max-sm:sr-only">{strings.languageName}</span>
+            </summary>
+            <ul class="absolute right-0 z-10 mt-1.5 min-w-40 list-none rounded-xl border border-line bg-surface p-1.5 shadow-lg">
+              {
+                locales.map((other) => (
+                  <li>
+                    <a
+                      class="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 no-underline hover:bg-accent-soft aria-[current=page]:font-bold"
+                      href={href(pathOf(page, other))}
+                      hreflang={other}
+                      lang={other}
+                      aria-current={other === locale ? "page" : undefined}
+                    >
+                      <Flag locale={other} /> {t(other).languageName}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </details>
+        </nav>
+      </header>
+
+      <!-- The mobile menu: a sheet from the left with the same links. -->
+      <el-dialog>
+        <dialog id="mobile-menu" class="backdrop:bg-transparent lg:hidden" aria-label={strings.nav.menu}>
+          <el-dialog-backdrop class="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-out data-closed:opacity-0"></el-dialog-backdrop>
+          <div tabindex="0" class="fixed inset-0 flex focus:outline-none">
+            <el-dialog-panel class="relative flex w-full max-w-80 p-2 transition duration-300 ease-out data-closed:-translate-x-full motion-reduce:transition-none">
+              <div class="flex h-full w-full flex-col rounded-xl bg-page shadow-xs ring-1 ring-line">
+                <div class="flex items-center justify-between border-b border-line p-4">
+                  <span class="flex items-center gap-2 text-[19px] font-extrabold tracking-tight">
+                    <LogoMark class="size-7 flex-none rounded-[7px] ring-1 ring-ink/10" />
+                    <span>Date<span class="text-accent">Stamp</span></span>
+                  </span>
+                  <button
+                    type="button"
+                    command="close"
+                    commandfor="mobile-menu"
+                    class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-ink hover:bg-ink/5"
+                    aria-label={strings.nav.close}
+                  >
+                    <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"></path></svg>
+                  </button>
+                </div>
+                <ul class="flex flex-col gap-0.5 p-4">
+                  {
+                    navItems.map((item) => (
+                      <li>
+                        <a
+                          class="flex min-h-11 items-center rounded-lg px-3 text-base font-medium text-ink no-underline hover:bg-ink/5 aria-[current=page]:bg-ink/5"
+                          href={item.href}
+                          aria-current={item.current ? "page" : undefined}
+                        >
+                          {item.label}
+                        </a>
+                      </li>
+                    ))
+                  }
+                </ul>
+                <div class="mt-auto flex items-center justify-between border-t border-line p-4 text-sm font-medium">
+                  {strings.theme.label}
+                  <ThemeSwitch locale={locale} />
+                </div>
+              </div>
+            </el-dialog-panel>
+          </div>
+        </dialog>
+      </el-dialog>
+
+      <main class="flex flex-1 flex-col pb-2 lg:px-2">
+        <div class="grow lg:rounded-xl lg:bg-page lg:px-6 lg:shadow-xs lg:ring-1 lg:ring-line">
+          <div class="page">
+            <AdRail side="left" locale={locale} />
+            <div class="mx-auto w-full max-w-240 min-w-0 px-4 lg:px-0">
+              <slot />
+              <footer class="mt-8 border-t border-line">
+                <div class="flex flex-col gap-2 py-6 text-sm text-muted sm:flex-row sm:justify-between sm:gap-3">
+                  <span>{strings.footer}</span>
+                  <span class="flex gap-4">
+                    {
+                      askConsent && (
+                        <button type="button" class="cursor-pointer underline hover:text-ink" data-consent-open>
+                          {strings.consent.settings}
+                        </button>
+                      )
+                    }
+                    <a class="underline hover:text-ink" href={href(pathOf("privacy", locale))}>{strings.privacy.h1}</a>
+                  </span>
+                </div>
+              </footer>
+            </div>
+            <AdRail side="right" locale={locale} />
+          </div>
+        </div>
+      </main>
+    </div>
+
+    {askConsent && <ConsentBanner locale={locale} />}
+
+    <script>
+      import "@tailwindplus/elements"
+      import { RAILS_MIN_WIDTH, fillAds } from "../lib/ads"
+
+      // A link to a section of this page (#steps) does not leave the page, so
+      // the menu closes itself on any link.
+      const menu = document.querySelector<HTMLDialogElement>("#mobile-menu")
+      menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => menu.close()))
+
+      // Draw a marker scribble under the heading a link jumped to (.scribble
+      // in global.css). On a click of a link to this page's section, and on
+      // arrival with a hash.
+      const SCRIBBLE =
+        '<svg class="scribble" aria-hidden="true" viewBox="0 0 418 42" preserveAspectRatio="none"><path d="M203.371.916c-26.013-2.078-76.686 1.963-124.73 9.946L67.3 12.749C35.421 18.062 18.2 21.766 6.004 25.934 1.244 27.561.828 27.778.874 28.61c.07 1.214.828 1.121 9.595-1.176 9.072-2.377 17.15-3.92 39.246-7.496C123.565 7.986 157.869 4.492 195.942 5.046c7.461.108 19.25 1.696 19.17 2.582-.107 1.183-7.874 4.31-25.75 10.366-21.992 7.45-35.43 12.534-36.701 13.884-2.173 2.308-.202 4.407 4.442 4.734 2.654.187 3.263.157 15.593-.78 35.401-2.686 57.944-3.488 88.365-3.143 46.327.526 75.721 2.23 130.788 7.584 19.787 1.924 20.814 1.98 24.557 1.332l.066-.011c1.201-.203 1.53-1.825.399-2.335-2.911-1.31-4.893-1.604-22.048-3.261-57.509-5.556-87.871-7.36-132.059-7.842-23.239-.254-33.617-.116-50.627.674-11.629.54-42.371 2.494-46.696 2.967-2.359.259 8.133-3.625 26.504-9.81 23.239-7.825 27.934-10.149 28.304-14.005.417-4.348-3.529-6-16.878-7.066Z"></path></svg>'
+      const highlight = (id: string) => {
+        const target = id && document.getElementById(id)
+        if (!target) return
+        // The scribble spans the text, not the whole row: wrap the text once.
+        let host = target.querySelector<HTMLElement>(":scope > .scribble-host")
+        if (!host) {
+          host = document.createElement("span")
+          host.className = "scribble-host relative isolate"
+          host.append(...target.childNodes)
+          host.insertAdjacentHTML("beforeend", SCRIBBLE)
+          target.append(host)
+        }
+        target.classList.remove("is-target")
+        // Drawn once the smooth scroll has arrived, not while the heading flies by.
+        afterScroll(() => {
+          void target.offsetWidth // restart the animation
+          target.classList.add("is-target")
+        })
+      }
+      // Calls back when the page has stopped scrolling for ~100 ms (or right
+      // away if it never moves). Polled each frame: Safari lacks scrollend.
+      function afterScroll(callback: () => void) {
+        let last = scrollY
+        let still = 0
+        const started = performance.now()
+        const check = () => {
+          still = scrollY === last ? still + 1 : 0
+          last = scrollY
+          if (still >= 6 || performance.now() - started > 2500) callback()
+          else requestAnimationFrame(check)
+        }
+        requestAnimationFrame(check)
+      }
+      document.addEventListener("click", (event) => {
+        const link = (event.target as Element).closest<HTMLAnchorElement>('a[href*="#"]')
+        if (link && link.pathname === location.pathname) highlight(decodeURIComponent(link.hash.slice(1)))
+      })
+      if (location.hash) highlight(decodeURIComponent(location.hash.slice(1)))
+
+      // The navbar's underline: under the current page's item, and on the home
+      // page under the section being read (the last one whose top has passed
+      // a third of the screen; the last one at the very bottom).
+      const nav = document.querySelector<HTMLElement>("[data-nav]")
+      const indicator = nav?.querySelector<HTMLElement>("[data-nav-indicator]")
+      if (nav && indicator) {
+        const moveTo = (link: HTMLElement | null | undefined) => {
+          if (!link) return void (indicator.style.width = "0px")
+          indicator.style.translate = `${link.offsetLeft + 8}px 0`
+          indicator.style.width = `${link.offsetWidth - 16}px`
+        }
+        const sectionLinks = [...nav.querySelectorAll<HTMLAnchorElement>("a[data-section]")]
+        const current = () => {
+          if (!sectionLinks.length) return nav.querySelector<HTMLElement>('a[aria-current="page"]')
+          const atBottom = innerHeight + scrollY >= document.documentElement.scrollHeight - 4
+          let found = sectionLinks[0]
+          for (const link of sectionLinks.slice(1)) {
+            const section = document.getElementById(link.dataset.section!)
+            if (section && (atBottom || section.getBoundingClientRect().top <= innerHeight / 3)) found = link
+          }
+          return found
+        }
+        // A clicked section link keeps the underline until the visitor scrolls
+        // by hand: near the end of the page the scroll cannot bring every
+        // section to the top, and the underline would land on the wrong item.
+        let pinned: HTMLElement | null = null
+        sectionLinks.forEach((link) => link.addEventListener("click", () => {
+          pinned = link
+          moveTo(link)
+        }))
+        const unpin = () => (pinned = null)
+        for (const type of ["wheel", "touchstart", "keydown"]) addEventListener(type, unpin, { passive: true })
+
+        // Placed before the first paint without animating, then animated.
+        moveTo(current())
+        requestAnimationFrame(() => (indicator.dataset.ready = ""))
+        let frame = 0
+        const follow = () => {
+          cancelAnimationFrame(frame)
+          frame = requestAnimationFrame(() => moveTo(pinned ?? current()))
+        }
+        if (sectionLinks.length) addEventListener("scroll", follow, { passive: true })
+        addEventListener("resize", follow)
+        document.fonts?.ready.then(follow)
+      }
+
+      fillAds()
+      // Ad requests wait for the cookie choice; units already pushed then load by themselves.
+      addEventListener("datestamp:consent", fillAds)
+      // A phone turned sideways or a window made wider: the rails appear, fill them then.
+      matchMedia(`(min-width: ${RAILS_MIN_WIDTH}px)`).addEventListener("change", fillAds)
+    </script>
+  </body>
+</html>

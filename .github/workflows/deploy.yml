@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+# Deploys only what passed CI: it runs when the CI workflow has finished
+# on main, and only if it succeeded (or by hand).
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The commit CI tested, not whatever main is by now.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          # Project site: https://<owner>.github.io/<repo>/
+          # For a custom domain set SITE to it and BASE_PATH to "/".
+          SITE: https://${{ github.repository_owner }}.github.io
+          BASE_PATH: /${{ github.event.repository.name }}
+          # Repository variables (Settings → Secrets and variables → Actions →
+          # Variables). Unset = no ads; the site builds without them.
+          PUBLIC_ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
+          PUBLIC_ADSENSE_SLOT_LEFT: ${{ vars.ADSENSE_SLOT_LEFT }}
+          PUBLIC_ADSENSE_SLOT_RIGHT: ${{ vars.ADSENSE_SLOT_RIGHT }}
+          PUBLIC_ADSENSE_SLOT_INLINE: ${{ vars.ADSENSE_SLOT_INLINE }}
+          PUBLIC_CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+          PUBLIC_GA_ID: ${{ vars.GA_MEASUREMENT_ID }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,31 @@
+---
+// Every page in every locale comes from this one route: getStaticPaths
+// lists each (page, locale) pair under its translated path, so adding a
+// locale or a page never means copying page files.
+import type { GetStaticPaths } from "astro"
+import Home from "../components/Home.astro"
+import Guide from "../components/Guide.astro"
+import Privacy from "../components/Privacy.astro"
+import { isGuide, locales, pages, pathOf, type Locale, type Page } from "../i18n"
+
+export const getStaticPaths = (() =>
+  pages.flatMap((page) =>
+    locales.map((locale) => ({
+      // The rest parameter takes the path without its slashes; the home page of
+      // the default locale is the root, which Astro wants as `undefined`.
+      params: { path: pathOf(page, locale).replace(/^\/|\/$/g, "") || undefined },
+      props: { page, locale },
+    })),
+  )) satisfies GetStaticPaths
+
+interface Props {
+  page: Page
+  locale: Locale
+}
+
+const { page, locale } = Astro.props
+---
+
+{page === "home" && <Home locale={locale} />}
+{isGuide(page) && <Guide locale={locale} guide={page} />}
+{page === "privacy" && <Privacy locale={locale} />}

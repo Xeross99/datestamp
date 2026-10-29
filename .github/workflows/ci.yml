@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      # Types (astro check) and the static build, with the fake AdSense ids
+      # of playwright.config.ts (TEST_ADS_ENV) so the e2e tests see the ads
+      # and the cookie banner. This build is for the tests only; deploy.yml
+      # builds its own with the real ids.
+      - run: npm run build
+        env:
+          PUBLIC_ADSENSE_CLIENT: ca-pub-0000000000000000
+          PUBLIC_ADSENSE_SLOT_LEFT: "1111111111"
+          PUBLIC_ADSENSE_SLOT_RIGHT: "2222222222"
+          PUBLIC_ADSENSE_SLOT_INLINE: "3333333333"
+          PUBLIC_GA_ID: G-TEST000000
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: npm run test:e2e
+        env:
+          CI: true
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

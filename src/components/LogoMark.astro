@@ -1,0 +1,23 @@
+---
+// The brand mark before the wordmark: the same drawing as public/favicon.svg
+// (the D with the orange date stamp in its corner). The glow filter needs an
+// id of its own per copy (the navbar and the mobile menu both show it).
+interface Props {
+  class?: string
+}
+
+const { class: className = "size-7" } = Astro.props
+const glow = `logo-glow-${Math.random().toString(36).slice(2, 8)}`
+---
+
+<svg class={className} viewBox="0 0 64 64" aria-hidden="true">
+  <defs>
+    <filter id={glow} x="-50%" y="-80%" width="200%" height="260%">
+      <feGaussianBlur stdDeviation="2.2"></feGaussianBlur>
+    </filter>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#1c1b1a"></rect>
+  <path fill="#f1eeea" fill-rule="evenodd" d="M11 9h14a22 22 0 0 1 0 44H11ZM20.5 18.5H25a12.5 12.5 0 0 1 0 25h-4.5Z"></path>
+  <rect x="34" y="42" width="24" height="12" rx="3.5" fill="#ff5a00" opacity="0.75" filter={`url(#${glow})`}></rect>
+  <rect x="34" y="42" width="24" height="12" rx="3.5" fill="#ff8a1f" stroke="#1c1b1a" stroke-width="3" paint-order="stroke"></rect>
+</svg>
