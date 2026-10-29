@@ -17,18 +17,18 @@ const live = Boolean(adsense.client && slot)
 
 {
   (live || import.meta.env.DEV) && (
-    <aside class="ad-inline mx-auto mt-6 w-full max-w-[336px]" aria-label={label}>
+    <aside class="ad-inline mx-auto mt-6 w-full max-w-84" aria-label={label}>
       <p class="mb-1.5 text-center font-mono text-[11px] tracking-widest text-muted uppercase">{label}</p>
       {live ? (
         <ins
-          class="adsbygoogle block min-h-[250px]"
+          class="adsbygoogle block min-h-62.5"
           data-ad-client={adsense.client}
           data-ad-slot={slot}
           data-ad-format="auto"
           data-full-width-responsive="true"
         />
       ) : (
-        <div class="flex h-[250px] items-center justify-center rounded-md bg-subtle font-mono text-xs text-muted">300 × 250</div>
+        <div class="flex h-62.5 items-center justify-center rounded-md bg-subtle font-mono text-xs text-muted">300 × 250</div>
       )}
     </aside>
   )
