@@ -183,6 +183,17 @@ test("the examples show the three sample photos, credited", async ({ page, reque
   await expect(page.getByRole("link", { name: "Kamil Krzysteczko" })).toBeVisible()
 })
 
+test("on the home page the inline ad sits after the examples, before the FAQ, away from the editor", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "the inline ad shows only on screens without rails")
+  await page.goto(pathOf("home", "pl"))
+  const ad = page.locator(".ad-inline")
+  await expect(ad).toBeVisible()
+  const top = async (selector: string) => (await page.locator(selector).boundingBox())!.y
+  const adTop = await top(".ad-inline")
+  expect(adTop).toBeGreaterThan(await top("#examples"))
+  expect(adTop).toBeLessThan(await top("#faq"))
+})
+
 test("without ads (a build with no AdSense ids renders no rails) the content keeps its full width", async ({ page, isMobile }) => {
   test.skip(isMobile, "the rails exist only on wide screens")
   await page.setViewportSize({ width: 1440, height: 900 })

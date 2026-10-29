@@ -42,8 +42,6 @@ const faqJsonLd = {
 
   <Editor locale={locale} />
 
-  <InlineAd locale={locale} />
-
   <section aria-labelledby="steps" class="pt-8 sm:pt-14">
     <div class="rounded-2xl bg-subtle px-5 py-10 sm:p-16">
       <h2 id="steps" class="text-center text-xl font-bold tracking-tight sm:text-2xl">{home.steps.title}</h2>
@@ -114,6 +112,9 @@ const faqJsonLd = {
       {home.examples.photoBy} <a class="underline hover:text-ink" href={SAMPLES_AUTHOR.url} rel="noopener">{SAMPLES_AUTHOR.name}</a> / <a class="underline hover:text-ink" href="https://unsplash.com" rel="noopener">Unsplash</a>
     </p>
   </section>
+
+  <!-- Away from the editor: AdSense forbids ads right next to its buttons. -->
+  <InlineAd locale={locale} />
 
   <section aria-labelledby="faq" class="pt-10 sm:pt-12">
     <h2 id="faq" class="mb-2 text-xl font-semibold tracking-tight sm:text-[22px]">{home.faqTitle}</h2>
