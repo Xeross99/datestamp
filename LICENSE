@@ -1,0 +1,22 @@
+Copyright (c) 2026 Michał Krzysteczko. All rights reserved.
+
+DateStamp (https://datestamp.eu) - its source code, design, texts and
+graphics - is proprietary. The source is published so that anyone can see
+how the tool works, and check that photos never leave the device.
+
+You may read the source and run it on your own computer to review it.
+You may not copy, modify, distribute, sublicense, or host this software or
+any part of it, or use it to run a website or service, without prior
+written permission from the copyright holder.
+
+Third-party parts keep their own licences:
+
+- npm dependencies (package.json): each under its own licence.
+- Tailwind Plus and Tailwind Plus Elements: used under the owner's
+  Tailwind Plus licence; not licensed to you by this repository.
+- Sample photos in public/samples: by Kamil Krzysteczko, from Unsplash,
+  under the Unsplash License.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY ARISING FROM THE SOFTWARE OR ITS USE.

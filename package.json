@@ -2,6 +2,7 @@
   "name": "datestamp",
   "type": "module",
   "private": true,
+  "license": "UNLICENSED",
   "engines": {
     "node": ">=22.12.0"
   },
