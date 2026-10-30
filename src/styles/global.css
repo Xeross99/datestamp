@@ -495,3 +495,52 @@
 .progress[data-failed] .progress-label {
   @apply text-red-500;
 }
+
+/* A long album scrolling inside the editor (with a mouse only, see
+   Editor.astro) fades out at an edge where photos are cut off, instead of
+   ending in a hard line. Two scroll-driven animations ramp each fade over
+   the first and the last 0.5rem of the scroll; a grid that does not scroll has
+   no timeline, so no fade. Browsers without them (Firefox) keep the hard
+   edge. Never on touch screens: a mask is a layer of its own there. */
+@property --fade-top {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --fade-bottom {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@keyframes photos-fade-top {
+  from {
+    --fade-top: 0px;
+  }
+  to {
+    --fade-top: 0.5rem;
+  }
+}
+@keyframes photos-fade-bottom {
+  from {
+    --fade-bottom: 0.5rem;
+  }
+  to {
+    --fade-bottom: 0px;
+  }
+}
+@media (pointer: fine) {
+  @supports (animation-timeline: scroll()) {
+    [data-photos] {
+      mask-image: linear-gradient(to bottom, transparent, #000 var(--fade-top), #000 calc(100% - var(--fade-bottom)), transparent);
+      /* Longhands: the minifier folds a shorthand and the timeline into one
+         "animation", which browsers reject. */
+      animation-name: photos-fade-top, photos-fade-bottom;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(self);
+      animation-range:
+        0 0.5rem,
+        calc(100% - 0.5rem) 100%;
+    }
+  }
+}

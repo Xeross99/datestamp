@@ -1,5 +1,5 @@
-// The progress bar above the photos: a step label, a "3 / 12" count and a
-// bar. start() opens it (data-open: it grows and fades in), finish() turns
+// The progress bar over the bottom of the photos: a step label, a "3 / 12" count and a
+// bar. start() opens it (data-open: it slides up and fades in), finish() turns
 // it green (data-finished) and closes it after a moment, fail() turns it
 // red and keeps it open. Closed, it is inert, so nothing in it is focusable.
 

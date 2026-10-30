@@ -23,10 +23,17 @@ test.describe("adding photos", () => {
     await expect(progress).toHaveAttribute("data-open", "")
     await expect(progress).toHaveAttribute("data-finished", "")
     await expect(progress.locator("[data-progress-count]")).toHaveText("3 / 3")
-    // It closes by itself, animated down to no height, and is inert then.
+    // It closes by itself, fading out, and is inert then.
     await expect(progress).not.toHaveAttribute("data-open", /.*/, { timeout: 5000 })
-    await expect.poll(() => progress.evaluate((element) => element.getBoundingClientRect().height)).toBe(0)
+    await expect(progress).toHaveCSS("opacity", "0")
     await expect(progress).toHaveJSProperty("inert", true)
+
+    // It floats over the photos: opening it again does not move them.
+    const grid = page.locator("[data-photos]")
+    const top = (await grid.boundingBox())!.y
+    await page.locator("[data-input]").setInputFiles(fixture("no-exif-square.jpg"))
+    await expect(progress).toHaveAttribute("data-open", "")
+    expect((await grid.boundingBox())!.y).toBe(top)
   })
 
   test("takes a photo dropped anywhere on the page", async ({ page }) => {
@@ -251,7 +258,27 @@ test("with a mouse a long album scrolls inside the editor; on a touch screen the
     await expect(grid).toHaveCSS("overflow-y", "visible")
   } else {
     await expect(grid).toHaveCSS("overflow-y", "auto")
-    expect((await grid.boundingBox())!.height).toBeLessThanOrEqual(388 + 1)
+    expect(await grid.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true)
+    // Beside the settings, the grid fills the column down to "add more", which sits at its bottom.
+    const editor = (await page.locator("[data-editor]").boundingBox())!
+    const addMore = (await page.locator("[data-add-more]").boundingBox())!
+    const box = (await grid.boundingBox())!
+    expect(box.height).toBeGreaterThan(388)
+    expect(addMore.y - (box.y + box.height)).toBeLessThanOrEqual(16 - 4 + 1)
+    expect(editor.y + editor.height - (addMore.y + addMore.height)).toBeLessThanOrEqual(20 + 1 + 1)
+    // Its scroll area starts at the editor's top border, so photos fade out at that line.
+    expect(box.y).toBeCloseTo(editor.y + 1, 0)
+    // Cut-off photos fade out at the edge instead of ending in a hard line: only below at the top, both ways midway, only above at the end.
+    const fades = () => grid.evaluate((element) => ["--fade-top", "--fade-bottom"].map((name) => getComputedStyle(element).getPropertyValue(name)))
+    await expect.poll(fades).toEqual(["0px", "8px"])
+    await grid.evaluate((element) => element.scrollTo(0, (element.scrollHeight - element.clientHeight) / 2))
+    await expect.poll(fades).toEqual(["8px", "8px"])
+    await grid.evaluate((element) => element.scrollTo(0, element.scrollHeight))
+    await expect.poll(fades).toEqual(["8px", "0px"])
+    await grid.evaluate((element) => element.scrollTo(0, 0))
+    // Stacked (a narrow window), it scrolls inside at the drop zone's height.
+    await page.setViewportSize({ width: 700, height: 900 })
+    await expect.poll(async () => (await grid.boundingBox())!.height).toBeLessThanOrEqual(388 + 1)
     expect(await grid.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true)
   }
   await expect(page.locator(".photo [data-remove]").first()).toHaveCSS("cursor", "pointer")

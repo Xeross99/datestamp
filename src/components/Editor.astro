@@ -31,7 +31,7 @@ const button = "inline-flex cursor-pointer items-center justify-center gap-2 rou
 ---
 
 <div
-  class="flex flex-wrap overflow-hidden rounded-2xl border border-line bg-surface"
+  class="@container flex flex-wrap overflow-hidden rounded-2xl border border-line bg-surface"
   data-editor
   data-strings={JSON.stringify(s)}
   data-default-format={strings.dateFormats[0]}
@@ -42,7 +42,7 @@ const button = "inline-flex cursor-pointer items-center justify-center gap-2 rou
        and a click from inside the zone would open it twice. -->
   <input type="file" accept="image/*,.heic,.heif" multiple hidden data-input />
 
-  <div class="flex min-w-0 flex-[999_1_520px] flex-col gap-4 p-4 sm:p-5">
+  <div class="relative flex min-w-0 flex-[999_1_520px] flex-col gap-4 p-4 sm:p-5">
     <div
       class="group flex min-h-40 flex-1 cursor-pointer flex-col items-center justify-center gap-3.5 rounded-xl border-[1.5px] border-dashed border-line-strong bg-page p-6 text-center transition-colors hover:border-accent data-dragging:border-accent data-dragging:bg-accent-soft sm:min-h-95"
       data-dropzone
@@ -62,40 +62,46 @@ const button = "inline-flex cursor-pointer items-center justify-center gap-2 rou
       <p class="font-mono text-xs text-muted">JPG · PNG · HEIC · WEBP</p>
     </div>
 
-    <!-- Opens and closes by animating its height (grid rows 0fr ↔ 1fr) with a
-         fade and a small slide, so the photos below move smoothly instead of
-         jumping. Closed, it is inert and has no height (progress.ts). -->
+    <!-- Floats over the bottom of the photos' column, so opening and closing
+         it never moves the photos: it fades in with a small slide, and closed
+         it is invisible and inert (progress.ts). Absolute, not fixed: a
+         fixed layer turns iOS Safari's toolbar opaque. -->
     <div
-      class="progress -my-2 grid -translate-y-1 grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity,translate,margin] duration-300 ease-out data-open:my-0 data-open:translate-y-0 data-open:grid-rows-[1fr] data-open:opacity-100 motion-reduce:transition-none"
+      class="progress pointer-events-none absolute inset-x-4 bottom-4 z-10 translate-y-2 opacity-0 transition-[opacity,translate] duration-300 ease-out data-open:pointer-events-auto data-open:translate-y-0 data-open:opacity-100 motion-reduce:transition-none sm:inset-x-5 sm:bottom-5"
       data-progress
       inert
     >
-      <div class="min-h-0 overflow-hidden">
-        <div class="rounded-xl border border-line bg-page px-3.5 py-3">
-          <div class="mb-2 flex items-baseline justify-between gap-3 text-[15px] font-semibold" aria-live="polite">
-            <span class="progress-label" data-progress-label></span>
-            <span class="font-mono text-[13px] font-normal text-muted tabular-nums" data-progress-count></span>
-          </div>
-          <div class="h-1.5 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <div class="progress-fill h-full origin-left rounded-full bg-accent transition-transform duration-350" data-progress-fill></div>
-          </div>
-          <!-- On phones the share sheet needs a fresh tap once a long export is done. -->
-          <button type="button" class={`${button} mt-3 h-11 bg-accent px-4 text-on-accent`} data-save-now hidden>{s.saveNow}</button>
+      <div class="rounded-xl border border-line bg-page px-3.5 py-3 shadow-lg">
+        <div class="mb-2 flex items-baseline justify-between gap-3 text-[15px] font-semibold" aria-live="polite">
+          <span class="progress-label" data-progress-label></span>
+          <span class="font-mono text-[13px] font-normal text-muted tabular-nums" data-progress-count></span>
         </div>
+        <div class="h-1.5 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-fill h-full origin-left rounded-full bg-accent transition-transform duration-350" data-progress-fill></div>
+        </div>
+        <!-- On phones the share sheet needs a fresh tap once a long export is done. -->
+        <button type="button" class={`${button} mt-3 h-11 bg-accent px-4 text-on-accent`} data-save-now hidden>{s.saveNow}</button>
       </div>
     </div>
 
-    <!-- With a mouse, a long album scrolls inside, as high as the drop zone,
-         so the editor keeps its size. Not on touch screens: a scroll
-         container is its own layer and turns iOS Safari's toolbar opaque. -->
+    <!-- With a mouse, a long album scrolls inside, so the editor keeps its
+         size: as high as the drop zone when the columns are stacked, and
+         down to "add more" when they stand side by side (52.5rem = the two
+         columns' 520 + 320 px bases), where its zero basis lets the settings
+         set the height. Its scroll area reaches up to the editor's top
+         border (-mt/pt = the column's padding), so cut-off photos fade out
+         at that line. Not on touch screens: a scroll container is its own
+         layer and turns iOS Safari's toolbar opaque. -->
     <div
-      class="grid grid-cols-2 gap-3 empty:hidden sm:grid-cols-3 lg:grid-cols-4 pointer-fine:-m-1 pointer-fine:max-h-97 pointer-fine:overflow-y-auto pointer-fine:overscroll-contain pointer-fine:p-1"
+      class="grid grid-cols-2 content-start gap-3 empty:hidden sm:grid-cols-3 lg:grid-cols-4 pointer-fine:-m-1 pointer-fine:-mt-4 pointer-fine:max-h-97 pointer-fine:overflow-y-auto pointer-fine:overscroll-contain pointer-fine:p-1 pointer-fine:pt-4 sm:pointer-fine:-mt-5 sm:pointer-fine:pt-5 pointer-fine:@min-[52.5rem]:max-h-none pointer-fine:@min-[52.5rem]:min-h-0 pointer-fine:@min-[52.5rem]:flex-[1_1_0]"
       data-photos
     ></div>
 
+    <!-- At the bottom of the column (mt-auto), level with the save buttons on
+         the right, however few photos there are. -->
     <button
       type="button"
-      class={`${button} h-11 self-stretch border border-dashed border-line-strong bg-surface px-4 text-sm font-medium hover:border-accent sm:self-start`}
+      class={`${button} mt-auto h-11 self-stretch border border-dashed border-line-strong bg-surface px-4 text-sm font-medium hover:border-accent sm:self-start`}
       data-add-more
       hidden
     >
